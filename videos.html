@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Videos — Bruno Ganontha</title>
+  <meta name="description" content="YouTube videos by Bruno Ganontha on mechanistic interpretability, AI safety, and machine learning.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
+    <ul class="nav__links">
+      <li><a class="nav__link" href="index.html">Home</a></li>
+      <li><a class="nav__link" href="research.html">Research</a></li>
+      <li><a class="nav__link" href="blog.html">Blog</a></li>
+      <li><a class="nav__link" href="videos.html">Videos</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+      <button class="nav__hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav__mobile" id="nav-mobile">
+  <a class="nav__link" href="index.html">Home</a>
+  <a class="nav__link" href="research.html">Research</a>
+  <a class="nav__link" href="blog.html">Blog</a>
+  <a class="nav__link" href="videos.html">Videos</a>
+</div>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header container">
+  <div class="page-header__label">Videos</div>
+  <h1 class="page-header__title">YouTube Channel</h1>
+  <p class="page-header__subtitle">
+    I make videos on mechanistic interpretability, AI safety, paper explanations, and ML concepts.
+    Subscribe to get notified when new videos drop.
+  </p>
+  <div style="margin-top: 20px;">
+    <a href="https://www.youtube.com/@YourChannelHandle" target="_blank" rel="noopener" class="btn btn-primary" id="channel-btn">
+      ▶ Visit My Channel
+    </a>
+  </div>
+</header>
+
+<!-- ===== FILTER TABS ===== -->
+<div class="container">
+  <div class="filter-tabs" id="video-filter-tabs">
+    <button class="filter-tab active" data-filter="all">All Videos</button>
+  </div>
+</div>
+
+<!-- ===== VIDEO GRID ===== -->
+<main class="container" style="padding-bottom: 80px;">
+  <div id="placeholder-notice" class="hidden" style="
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  ">
+    📌 <strong style="color:var(--accent)">Placeholder videos shown</strong> — Edit <code>js/videos-data.js</code>
+    to add your own YouTube video IDs.
+  </div>
+  <div class="video-grid" id="video-grid"></div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__name">Bruno<span>.</span>Ganontha</p>
+    <nav class="footer__links">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+    </nav>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha</p>
+  </div>
+</footer>
+
+<script src="js/videos-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  document.getElementById('channel-btn').href = YOUTUBE_CHANNEL_URL;
+
+  // Show placeholder notice if using sample videos
+  if (VIDEOS.length === 0) {
+    document.getElementById('placeholder-notice').classList.remove('hidden');
+  }
+
+  // Build category filter tabs
+  const categories = [...new Set(ALL_VIDEOS.map(v => v.category))];
+  const tabsEl = document.getElementById('video-filter-tabs');
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tab';
+    btn.dataset.filter = cat;
+    btn.textContent = cat;
+    tabsEl.appendChild(btn);
+  });
+
+  function renderVideos(filter) {
+    const grid = document.getElementById('video-grid');
+    const videos = filter === 'all'
+      ? ALL_VIDEOS
+      : ALL_VIDEOS.filter(v => v.category === filter);
+
+    if (videos.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-state__icon">🎬</div>
+        <div class="empty-state__text">No videos in this category yet.</div>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = videos.map(v => `
+      <div class="video-card">
+        <div class="video-card__embed">
+          <iframe
+            src="https://www.youtube.com/embed/${v.youtubeId}"
+            title="${v.title}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <div class="video-card__info">
+          <div class="video-card__title">${v.title}</div>
+          ${v.description ? `<div class="video-card__desc">${v.description}</div>` : ''}
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-tab');
+    if (!btn) return;
+    tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderVideos(btn.dataset.filter);
+  });
+
+  renderVideos('all');
+</script>
+</body>
+</html>

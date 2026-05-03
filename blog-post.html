@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Post — Bruno Ganontha</title>
+  <meta name="description" content="Blog post by Bruno Ganontha">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
+    <ul class="nav__links">
+      <li><a class="nav__link" href="index.html">Home</a></li>
+      <li><a class="nav__link" href="research.html">Research</a></li>
+      <li><a class="nav__link" href="blog.html">Blog</a></li>
+      <li><a class="nav__link" href="videos.html">Videos</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+      <button class="nav__hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav__mobile" id="nav-mobile">
+  <a class="nav__link" href="index.html">Home</a>
+  <a class="nav__link" href="research.html">Research</a>
+  <a class="nav__link" href="blog.html">Blog</a>
+  <a class="nav__link" href="videos.html">Videos</a>
+</div>
+
+<!-- ===== BLOG POST CONTENT ===== -->
+<main class="container page-content" style="max-width: 820px;">
+  <a href="blog.html" class="back-link">← Back to Blog</a>
+
+  <div id="post-container">
+    <!-- Loading state -->
+    <div id="post-loading" style="text-align:center; padding: 60px 0; color: var(--text-secondary);">
+      Loading post…
+    </div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__name">Bruno<span>.</span>Ganontha</p>
+    <nav class="footer__links">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+    </nav>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha</p>
+  </div>
+</footer>
+
+<!-- KaTeX JS -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInBody()"></script>
+
+<script src="js/blog-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Get post ID from URL
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get('id');
+
+  function renderMathInBody() {
+    const body = document.querySelector('.post-body');
+    if (!body) return;
+    renderMathInElement(body, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$',  right: '$',  display: false },
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ],
+      throwOnError: false
+    });
+  }
+
+  function loadPost() {
+    const container = document.getElementById('post-container');
+
+    if (!postId) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__icon">❌</div>
+          <div class="empty-state__text">No post specified. <a href="blog.html">Return to blog</a>.</div>
+        </div>`;
+      return;
+    }
+
+    const post = getBlogPostById(postId);
+
+    if (!post) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__icon">🔍</div>
+          <div class="empty-state__text">Post not found. <a href="blog.html">Return to blog</a>.</div>
+        </div>`;
+      return;
+    }
+
+    // Update page title
+    document.title = `${post.title} — Bruno Ganontha`;
+
+    const d = formatDate(post.date);
+
+    container.innerHTML = `
+      <article>
+        <header class="post-header">
+          <div class="post-category">${post.category}</div>
+          <h1 class="post-title">${post.title}</h1>
+          <div class="post-meta">
+            <span>📅 ${d.full}</span>
+            <span>⏱ ${post.readTime}</span>
+          </div>
+        </header>
+        <div class="post-body">${post.content}</div>
+        <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border);">
+          <a href="blog.html" class="btn btn-outline">← Back to all posts</a>
+        </div>
+      </article>`;
+
+    // Render LaTeX after content is in the DOM
+    // If KaTeX auto-render is already loaded, call immediately; otherwise it fires via onload
+    if (typeof renderMathInElement !== 'undefined') {
+      renderMathInBody();
+    }
+  }
+
+  // Run after DOM and data are ready
+  document.addEventListener('DOMContentLoaded', loadPost);
+</script>
+</body>
+</html>

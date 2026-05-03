@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research — Bruno Ganontha</title>
+  <meta name="description" content="Research projects in mechanistic interpretability, AI safety, and large language models.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
+    <ul class="nav__links">
+      <li><a class="nav__link" href="index.html">Home</a></li>
+      <li><a class="nav__link" href="research.html">Research</a></li>
+      <li><a class="nav__link" href="blog.html">Blog</a></li>
+      <li><a class="nav__link" href="videos.html">Videos</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+      <button class="nav__hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav__mobile" id="nav-mobile">
+  <a class="nav__link" href="index.html">Home</a>
+  <a class="nav__link" href="research.html">Research</a>
+  <a class="nav__link" href="blog.html">Blog</a>
+  <a class="nav__link" href="videos.html">Videos</a>
+</div>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header container">
+  <div class="page-header__label">Research</div>
+  <h1 class="page-header__title">Projects &amp; Publications</h1>
+  <p class="page-header__subtitle">
+    My work focuses on mechanistic interpretability of large language models and AI safety.
+    I'm interested in understanding the internal representations and algorithms that emerge
+    in transformer-based models.
+  </p>
+</header>
+
+<!-- ===== FILTER TABS ===== -->
+<div class="container">
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="filter-tab active" data-filter="all">All Projects</button>
+  </div>
+</div>
+
+<!-- ===== RESEARCH GRID ===== -->
+<main class="container" style="padding-bottom: 80px;">
+  <div class="cards-grid" id="research-grid"></div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__name">Bruno<span>.</span>Ganontha</p>
+    <nav class="footer__links">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+    </nav>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha</p>
+  </div>
+</footer>
+
+<script src="js/research-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  const STATUS_COLORS = {
+    'Ongoing':    '#F59E0B',
+    'Published':  '#10B981',
+    'Preprint':   '#6366F1',
+    'In Review':  '#0EA5E9'
+  };
+
+  // Build filter tabs from unique statuses
+  const statuses = [...new Set(RESEARCH_PROJECTS.map(p => p.status))];
+  const tabsEl = document.getElementById('filter-tabs');
+  statuses.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tab';
+    btn.dataset.filter = s;
+    const col = STATUS_COLORS[s] || '#F59E0B';
+    btn.innerHTML = `<span style="color:${col}">●</span> ${s}`;
+    tabsEl.appendChild(btn);
+  });
+
+  function renderCards(filter) {
+    const grid = document.getElementById('research-grid');
+    const projects = filter === 'all'
+      ? RESEARCH_PROJECTS
+      : RESEARCH_PROJECTS.filter(p => p.status === filter);
+
+    if (projects.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-state__icon">🔍</div>
+        <div class="empty-state__text">No projects in this category yet.</div>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = projects.map(p => {
+      const col = STATUS_COLORS[p.status] || '#F59E0B';
+      const linksHtml = p.links && p.links.length
+        ? p.links.map(l => `<a href="${l.url}" class="card__link" target="_blank" rel="noopener">↗ ${l.label}</a>`).join('')
+        : '<span style="font-size:0.8rem; color:var(--text-muted)">Links coming soon</span>';
+      return `
+        <div class="card">
+          <div class="card__badge" style="background:${col}22; color:${col}">● ${p.status}</div>
+          <h3 class="card__title">${p.title}</h3>
+          <p class="card__desc">${p.description}</p>
+          <div class="card__tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <div class="card__links">${linksHtml}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Tab click handler
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-tab');
+    if (!btn) return;
+    tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(btn.dataset.filter);
+  });
+
+  renderCards('all');
+</script>
+</body>
+</html>

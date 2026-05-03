@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Bruno Ganontha</title>
+  <meta name="description" content="Articles on mechanistic interpretability, AI safety, and machine learning research.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
+    <ul class="nav__links">
+      <li><a class="nav__link" href="index.html">Home</a></li>
+      <li><a class="nav__link" href="research.html">Research</a></li>
+      <li><a class="nav__link" href="blog.html">Blog</a></li>
+      <li><a class="nav__link" href="videos.html">Videos</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+      <button class="nav__hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav__mobile" id="nav-mobile">
+  <a class="nav__link" href="index.html">Home</a>
+  <a class="nav__link" href="research.html">Research</a>
+  <a class="nav__link" href="blog.html">Blog</a>
+  <a class="nav__link" href="videos.html">Videos</a>
+</div>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header container">
+  <div class="page-header__label">Blog</div>
+  <h1 class="page-header__title">Articles &amp; Notes</h1>
+  <p class="page-header__subtitle">
+    I write about mechanistic interpretability, AI safety, LLM research, and ideas I find
+    interesting. Posts support LaTeX math notation.
+  </p>
+</header>
+
+<!-- ===== FILTER TABS ===== -->
+<div class="container">
+  <div class="filter-tabs" id="blog-filter-tabs">
+    <button class="filter-tab active" data-filter="all">All Posts</button>
+  </div>
+</div>
+
+<!-- ===== BLOG LIST ===== -->
+<main class="container" style="padding-bottom: 80px;">
+  <div class="blog-grid" id="blog-list"></div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__name">Bruno<span>.</span>Ganontha</p>
+    <nav class="footer__links">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="blog.html">Blog</a>
+      <a href="videos.html">Videos</a>
+    </nav>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha</p>
+  </div>
+</footer>
+
+<script src="js/blog-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Build category filter tabs
+  const categories = [...new Set(BLOG_POSTS.map(p => p.category))];
+  const tabsEl = document.getElementById('blog-filter-tabs');
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tab';
+    btn.dataset.filter = cat;
+    btn.textContent = cat;
+    tabsEl.appendChild(btn);
+  });
+
+  function renderPosts(filter) {
+    const listEl = document.getElementById('blog-list');
+    const posts = filter === 'all'
+      ? BLOG_POSTS
+      : BLOG_POSTS.filter(p => p.category === filter);
+
+    if (posts.length === 0) {
+      listEl.innerHTML = `<div class="empty-state">
+        <div class="empty-state__icon">✍️</div>
+        <div class="empty-state__text">No posts in this category yet.</div>
+      </div>`;
+      return;
+    }
+
+    listEl.innerHTML = posts.map(p => {
+      const d = formatDate(p.date);
+      return `
+        <a href="blog-post.html?id=${p.id}" class="blog-card" style="text-decoration:none;">
+          <div class="blog-card__meta">
+            <div class="blog-card__date-block">
+              <span class="blog-card__date-month">${d.month}</span>
+              <span class="blog-card__date-day">${d.day}</span>
+              <span class="blog-card__date-year">${d.year}</span>
+            </div>
+          </div>
+          <div class="blog-card__content">
+            <div class="blog-card__category">${p.category}</div>
+            <div class="blog-card__title">${p.title}</div>
+            <div class="blog-card__excerpt">${p.excerpt}</div>
+            <div class="blog-card__footer">
+              <span>⏱ ${p.readTime}</span>
+              <span class="blog-card__read-more">Read more →</span>
+            </div>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-tab');
+    if (!btn) return;
+    tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPosts(btn.dataset.filter);
+  });
+
+  renderPosts('all');
+</script>
+</body>
+</html>
