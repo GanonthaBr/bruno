@@ -1,55 +1,71 @@
 /* ============================================================
-   cv-data.js
-   Edit your CV / About page content here.
+   cv-data.js  —  Edit your CV / About page content here.
    ============================================================ */
 
 const CV_DATA = {
 
-  bio: "I'm a graduate student in Machine Learning at Carnegie Mellon University, where I research mechanistic interpretability and AI safety. My goal is to develop rigorous tools for understanding the internal computations of large language models — building the scientific foundations needed to make AI systems transparent and trustworthy.",
+  bio: "AI & Machine Learning Engineer with a strong background in software engineering. My career focus is AI research — leveraging machine learning to make a significant positive impact on millions of lives. I specialize in AI Safety and alignment, with emphasis on Mechanistic Interpretability: reverse-engineering neural networks to understand their reasoning and enforce safety barriers.",
 
   education: [
     {
-      degree: "M.S. Machine Learning",
+      degree: "M.S. in Information Technology",
       school: "Carnegie Mellon University",
-      location: "Pittsburgh, PA",
-      period: "2024 — Present",
-      details: "School of Computer Science. Research focus: mechanistic interpretability of transformer-based LLMs and AI safety. Advisor: [Advisor Name]."
+      location: "Kigali, Rwanda",
+      period: "Aug 2025 — May 2027",
+      details: "Focus areas: Artificial Intelligence, Machine Learning, Data Analytics, Software Development, Computer Networking, Research."
     },
     {
-      degree: "B.S. Computer Science",
-      school: "Your Undergraduate University",
-      location: "City, State",
-      period: "20XX — 20XX",
-      details: "Graduated with honors. Relevant coursework: machine learning, algorithms, linear algebra, statistics."
+      degree: "B.S. in Management of Information Systems",
+      school: "African Development University",
+      location: "Niamey, Niger",
+      period: "Oct 2019 — Aug 2022",
+      details: "Coursework: Information Technology, Data Analytics, Software Development, Entrepreneurship and Leadership."
     }
   ],
 
   experience: [
     {
-      role: "Graduate Researcher",
-      org: "Carnegie Mellon University — ML & AI Safety",
-      period: "2024 — Present",
-      description: "Investigating mechanistic interpretability of transformer-based language models. Projects include sparse autoencoder feature decomposition in residual streams, circuit analysis for indirect object identification in GPT-2, and representation engineering for truthfulness."
+      role: "Graduate Teaching Assistant",
+      org: "Carnegie Mellon University — Kigali, Rwanda",
+      period: "Jan 2026 — May 2026",
+      description: "Assisted professor with teaching; held daily office hours to help students understand course concepts; responsible for grading homework."
+    },
+    {
+      role: "Software Developer",
+      org: "PayiSkoul — Abidjan, Cote d'Ivoire",
+      period: "May 2025 — Aug 2025",
+      description: "Developed a mobile application with Flutter, integrating REST API and WebSocket for instant messaging. Integrated a KYC system from an external provider for instant identity verification, ensuring 100% identity accuracy."
+    },
+    {
+      role: "Software Developer",
+      org: "ONG APIS — Niamey, Niger",
+      period: "Mar 2024 — Aug 2024",
+      description: "Created a full-stack web application and enhanced internal/external communications via a mailing system. Increased NGO visibility from 10 to 100+ volunteers per month."
     }
-    // Add more entries as needed:
-    // {
-    //   role: "Research Intern",
-    //   org: "Organization Name",
-    //   period: "Summer 2023",
-    //   description: "Description of work."
-    // }
   ],
 
   skills: {
-    "Languages":        ["Python", "JavaScript", "LaTeX", "Bash"],
-    "ML / DL":          ["PyTorch", "JAX", "Hugging Face", "Weights & Biases", "NumPy"],
-    "Interpretability": ["TransformerLens", "Sparse Autoencoders", "Activation Patching", "Logit Lens"],
-    "Tools":            ["Git", "Linux", "Docker", "Jupyter", "SLURM"]
+    "Programming":  ["Python", "NumPy", "PyTorch", "Keras", "Flutter", "Django"],
+    "ML / AI":      ["Machine Learning", "Deep Learning", "LLMs", "Diffusion Models", "RAG Systems"],
+    "Tools":        ["Git", "REST APIs", "WebSocket", "Docker", "Cloud Deployment"],
+    "Languages":    ["French (Native)", "English (Proficient)", "Arabic (Basic)"]
   },
 
-  awards: [
-    // Uncomment and fill in when you have awards:
-    // { title: "Fellowship Name", org: "Organization", year: "2024" }
+  awards: [],
+
+  community: [
+    {
+      role: "Technical Support",
+      org: "Eglise Evangelique de la Republique du Niger (EERN)",
+      period: "Oct 2023 — Jul 2025",
+      description: "Provided technical support during church services including projection and photography."
+    },
+    {
+      role: "Ministry of Technology — Student Council",
+      org: "African Development University — Niamey, Niger",
+      period: "Oct 2021 — Jul 2022",
+      description: "Promoted technology in the student community; organized 5+ training workshops on digital literacy."
+    }
   ]
 
 };

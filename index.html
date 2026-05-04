@@ -153,7 +153,8 @@
   // Render featured research (first 2 projects)
   const featuredEl = document.getElementById('featured-research');
   RESEARCH_PROJECTS.slice(0, 2).forEach(p => {
-    const statusColor = p.status === 'Ongoing' ? '#F59E0B' : p.status === 'Published' ? '#10B981' : '#6366F1';
+    const STATUS_COLORS = { 'Ongoing': '#F59E0B', 'Completed': '#10B981', 'Published': '#10B981', 'Preprint': '#6366F1', 'In Review': '#0EA5E9' };
+    const statusColor = STATUS_COLORS[p.status] || '#6366F1';
     featuredEl.innerHTML += `
       <div class="card">
         <div class="card__badge" style="background: ${statusColor}22; color: ${statusColor}">● ${p.status}</div>

@@ -78,6 +78,13 @@
     <div id="awards-list"></div>
   </section>
 
+  <!-- Community Involvement (hidden if empty) -->
+  <section class="section" id="community-section">
+    <h2 class="section-title">Community <span>Involvement</span></h2>
+    <div class="section-divider"></div>
+    <div class="timeline" id="community-timeline"></div>
+  </section>
+
 </main>
 
 <!-- ===== FOOTER ===== -->
@@ -155,6 +162,24 @@
             <div class="award-item__org">${a.org}</div>
           </div>
           <div class="award-item__year">${a.year}</div>
+        </div>`;
+    });
+  }
+
+  // Community involvement — hide section if empty
+  if (!CV_DATA.community || CV_DATA.community.length === 0) {
+    document.getElementById('community-section').style.display = 'none';
+  } else {
+    const commEl = document.getElementById('community-timeline');
+    CV_DATA.community.forEach(c => {
+      commEl.innerHTML += `
+        <div class="timeline-item">
+          <div class="timeline-item__header">
+            <div class="timeline-item__title">${c.role}</div>
+            <div class="timeline-item__period">${c.period}</div>
+          </div>
+          <div class="timeline-item__org">${c.org}</div>
+          <div class="timeline-item__desc">${c.description}</div>
         </div>`;
     });
   }
