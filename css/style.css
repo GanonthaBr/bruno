@@ -1095,3 +1095,137 @@ ul { list-style: none; }
 .mt-0  { margin-top: 0; }
 .mb-0  { margin-bottom: 0; }
 .hidden { display: none !important; }
+
+/* ============================================================
+   LANGUAGE SWITCHER
+   ============================================================ */
+.lang-switcher {
+  position: relative;
+}
+
+.lang-switcher__btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.lang-switcher__btn:hover,
+.lang-switcher.open .lang-switcher__btn {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.lang-switcher__btn svg { flex-shrink: 0; }
+
+.lang-switcher__label { font-size: 0.82rem; font-weight: 700; }
+
+.lang-switcher__dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 130px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 200;
+}
+[dir="rtl"] .lang-switcher__dropdown { right: auto; left: 0; }
+
+.lang-switcher.open .lang-switcher__dropdown { display: block; }
+
+.lang-option {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition);
+}
+[dir="rtl"] .lang-option { text-align: right; }
+
+.lang-option:hover { background: var(--accent-subtle); color: var(--accent); }
+.lang-option.active { color: var(--accent); font-weight: 600; background: var(--accent-subtle); }
+
+/* Mobile language row (inside .nav__mobile) */
+.mobile-lang-row {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.mobile-lang-btn {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: inherit;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.mobile-lang-btn:hover { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent-border); }
+.mobile-lang-btn.active { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent-border); font-weight: 600; }
+
+/* ============================================================
+   RTL OVERRIDES (Arabic)
+   ============================================================ */
+[dir="rtl"] body { font-family: 'Segoe UI', 'Noto Naskh Arabic', 'Inter', system-ui, sans-serif; }
+
+[dir="rtl"] .nav__inner { flex-direction: row-reverse; }
+[dir="rtl"] .nav__links { flex-direction: row-reverse; }
+[dir="rtl"] .nav__actions { flex-direction: row-reverse; }
+
+[dir="rtl"] .hero__inner { flex-direction: row-reverse; }
+
+[dir="rtl"] .section-title { text-align: right; }
+[dir="rtl"] .section-divider { margin-right: 0; }
+
+[dir="rtl"] .timeline { padding-left: 0; padding-right: 28px; }
+[dir="rtl"] .timeline::before { left: auto; right: 7px; }
+[dir="rtl"] .timeline-item::before { left: auto; right: -24px; }
+
+[dir="rtl"] .card__links { flex-direction: row-reverse; }
+
+[dir="rtl"] .blog-card { flex-direction: row-reverse; }
+[dir="rtl"] .blog-card__footer { flex-direction: row-reverse; }
+
+[dir="rtl"] .filter-tabs { flex-direction: row-reverse; }
+[dir="rtl"] .nav__mobile { text-align: right; }
+
+[dir="rtl"] .post-body { text-align: right; }
+[dir="rtl"] .post-body ul,
+[dir="rtl"] .post-body ol { padding-right: 24px; padding-left: 0; }
+
+[dir="rtl"] .footer__inner { flex-direction: row-reverse; }
+[dir="rtl"] .footer__links { flex-direction: row-reverse; }
+
+[dir="rtl"] .hero__socials { justify-content: flex-start; }
+[dir="rtl"] .hero__actions { flex-direction: row-reverse; }
+
+/* KaTeX math: force LTR inside RTL so formulas render correctly */
+[dir="rtl"] .katex-display,
+[dir="rtl"] .katex { direction: ltr; unicode-bidi: isolate; }
+
+/* Chevron flip for RTL */
+[dir="rtl"] .lang-switcher__btn svg:last-child { transform: scaleX(-1); }

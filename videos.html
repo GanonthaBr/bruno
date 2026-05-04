@@ -14,11 +14,11 @@
   <div class="nav__inner">
     <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
     <ul class="nav__links">
-      <li><a class="nav__link" href="index.html">Home</a></li>
-      <li><a class="nav__link" href="about.html">About</a></li>
-      <li><a class="nav__link" href="research.html">Research</a></li>
-      <li><a class="nav__link" href="blog.html">Blog</a></li>
-      <li><a class="nav__link" href="videos.html">Videos</a></li>
+      <li><a class="nav__link" href="index.html"    data-i18n="nav.home">Home</a></li>
+      <li><a class="nav__link" href="about.html"    data-i18n="nav.about">About</a></li>
+      <li><a class="nav__link" href="research.html" data-i18n="nav.research">Research</a></li>
+      <li><a class="nav__link" href="blog.html"     data-i18n="nav.blog">Blog</a></li>
+      <li><a class="nav__link" href="videos.html"   data-i18n="nav.videos">Videos</a></li>
     </ul>
     <div class="nav__actions">
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
@@ -29,24 +29,24 @@
   </div>
 </nav>
 <div class="nav__mobile" id="nav-mobile">
-  <a class="nav__link" href="index.html">Home</a>
-  <a class="nav__link" href="about.html">About</a>
-  <a class="nav__link" href="research.html">Research</a>
-  <a class="nav__link" href="blog.html">Blog</a>
-  <a class="nav__link" href="videos.html">Videos</a>
+  <a class="nav__link" href="index.html"    data-i18n="nav.home">Home</a>
+  <a class="nav__link" href="about.html"    data-i18n="nav.about">About</a>
+  <a class="nav__link" href="research.html" data-i18n="nav.research">Research</a>
+  <a class="nav__link" href="blog.html"     data-i18n="nav.blog">Blog</a>
+  <a class="nav__link" href="videos.html"   data-i18n="nav.videos">Videos</a>
 </div>
 
 <!-- ===== PAGE HEADER ===== -->
 <header class="page-header container">
-  <div class="page-header__label">Videos</div>
-  <h1 class="page-header__title">YouTube Channel</h1>
-  <p class="page-header__subtitle">
+  <div class="page-header__label" data-i18n="videos.pageLabel">Videos</div>
+  <h1 class="page-header__title" data-i18n="videos.title">YouTube Channel</h1>
+  <p class="page-header__subtitle" data-i18n="videos.subtitle">
     I make videos on mechanistic interpretability, AI safety, paper explanations, and ML concepts.
     Subscribe to get notified when new videos drop.
   </p>
   <div style="margin-top: 20px;">
     <a href="https://www.youtube.com/@YourChannelHandle" target="_blank" rel="noopener" class="btn btn-primary" id="channel-btn">
-      ▶ Visit My Channel
+      <span data-i18n="videos.visitChannel">▶ Visit My Channel</span>
     </a>
   </div>
 </header>
@@ -54,7 +54,7 @@
 <!-- ===== FILTER TABS ===== -->
 <div class="container">
   <div class="filter-tabs" id="video-filter-tabs">
-    <button class="filter-tab active" data-filter="all">All Videos</button>
+    <button class="filter-tab active" data-filter="all" data-i18n="videos.allVideos">All Videos</button>
   </div>
 </div>
 
@@ -68,45 +68,43 @@
   <div class="footer__inner">
     <p class="footer__name">Bruno<span>.</span>Ganontha</p>
     <nav class="footer__links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="research.html">Research</a>
-      <a href="blog.html">Blog</a>
-      <a href="videos.html">Videos</a>
+      <a href="index.html"    data-i18n="nav.home">Home</a>
+      <a href="about.html"    data-i18n="nav.about">About</a>
+      <a href="research.html" data-i18n="nav.research">Research</a>
+      <a href="blog.html"     data-i18n="nav.blog">Blog</a>
+      <a href="videos.html"   data-i18n="nav.videos">Videos</a>
     </nav>
-    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha</p>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha &middot; <span data-i18n="footer.built">Built with ☕ &amp; curiosity</span></p>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/translations.js"></script>
 <script src="js/videos-data.js"></script>
 <script src="js/main.js"></script>
 <script>
   document.getElementById('footer-year').textContent = new Date().getFullYear();
   document.getElementById('channel-btn').href = YOUTUBE_CHANNEL_URL;
 
+  const t = key => (window.I18n ? window.I18n.t(key) : key);
   const grid = document.getElementById('video-grid');
   const filterContainer = document.getElementById('video-filter-tabs').parentElement;
 
   if (VIDEOS.length === 0) {
-    // No videos yet — hide filter tabs, show professional coming-soon message
     filterContainer.style.display = 'none';
     grid.style.display = 'block';
     grid.innerHTML = `
       <div class="coming-soon">
         <div class="coming-soon__icon"><i data-lucide="video"></i></div>
-        <h2 class="coming-soon__title">Videos Coming Soon</h2>
-        <p class="coming-soon__text">
-          I'm working on video content covering AI safety, mechanistic interpretability,
-          and machine learning research. Subscribe to the channel to get notified when the first videos drop.
-        </p>
+        <h2 class="coming-soon__title">${t('videos.comingSoonTitle')}</h2>
+        <p class="coming-soon__text">${t('videos.comingSoonText')}</p>
         <a href="${YOUTUBE_CHANNEL_URL}" target="_blank" rel="noopener" class="btn btn-primary">
-          Subscribe on YouTube
+          ${t('videos.subscribeYouTube')}
         </a>
       </div>`;
     lucide.createIcons();
   } else {
-    // Build filter tabs and render video grid
     const categories = [...new Set(VIDEOS.map(v => v.category))];
     const tabsEl = document.getElementById('video-filter-tabs');
     categories.forEach(cat => {
@@ -122,7 +120,7 @@
       if (videos.length === 0) {
         grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
           <div class="empty-state__icon"><i data-lucide="video-off"></i></div>
-          <div class="empty-state__text">No videos in this category yet.</div>
+          <div class="empty-state__text">${t('videos.noVideosInCategory')}</div>
         </div>`;
         lucide.createIcons();
         return;

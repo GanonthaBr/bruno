@@ -6,7 +6,6 @@
   <title>Bruno Ganontha — AI & ML Engineer</title>
   <meta name="description" content="Bruno Ganontha — AI & Machine Learning Engineer at CMU Africa. Researching AI Safety, Alignment, and Mechanistic Interpretability.">
   <link rel="stylesheet" href="css/style.css">
-  <!-- KaTeX for LaTeX rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 </head>
 <body>
@@ -15,15 +14,13 @@
 <nav class="nav">
   <div class="nav__inner">
     <a class="nav__logo" href="index.html">Bruno<span>.</span></a>
-
     <ul class="nav__links">
-      <li><a class="nav__link" href="index.html">Home</a></li>
-      <li><a class="nav__link" href="about.html">About</a></li>
-      <li><a class="nav__link" href="research.html">Research</a></li>
-      <li><a class="nav__link" href="blog.html">Blog</a></li>
-      <li><a class="nav__link" href="videos.html">Videos</a></li>
+      <li><a class="nav__link" href="index.html"    data-i18n="nav.home">Home</a></li>
+      <li><a class="nav__link" href="about.html"    data-i18n="nav.about">About</a></li>
+      <li><a class="nav__link" href="research.html" data-i18n="nav.research">Research</a></li>
+      <li><a class="nav__link" href="blog.html"     data-i18n="nav.blog">Blog</a></li>
+      <li><a class="nav__link" href="videos.html"   data-i18n="nav.videos">Videos</a></li>
     </ul>
-
     <div class="nav__actions">
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
       <button class="nav__hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
@@ -35,24 +32,24 @@
 
 <!-- Mobile nav -->
 <div class="nav__mobile" id="nav-mobile">
-  <a class="nav__link" href="index.html">Home</a>
-  <a class="nav__link" href="about.html">About</a>
-  <a class="nav__link" href="research.html">Research</a>
-  <a class="nav__link" href="blog.html">Blog</a>
-  <a class="nav__link" href="videos.html">Videos</a>
+  <a class="nav__link" href="index.html"    data-i18n="nav.home">Home</a>
+  <a class="nav__link" href="about.html"    data-i18n="nav.about">About</a>
+  <a class="nav__link" href="research.html" data-i18n="nav.research">Research</a>
+  <a class="nav__link" href="blog.html"     data-i18n="nav.blog">Blog</a>
+  <a class="nav__link" href="videos.html"   data-i18n="nav.videos">Videos</a>
 </div>
 
 <!-- ===== HERO ===== -->
 <section class="hero container">
   <div class="hero__inner">
     <div class="hero__text">
-      <p class="hero__greeting">👋 Hello, I'm</p>
+      <p class="hero__greeting" data-i18n="index.greeting">👋 Hello, I'm</p>
       <h1 class="hero__name">Bruno Ganontha</h1>
-      <p class="hero__title">
+      <p class="hero__title" data-i18n-html="index.heroTitle">
         M.S. Information Technology &middot; <strong>CMU Africa</strong>, Kigali<br>
         <strong>AI &amp; Machine Learning Engineer</strong> &middot; AI Safety &amp; Alignment
       </p>
-      <p class="hero__bio">
+      <p class="hero__bio" data-i18n-html="index.heroBio">
         AI &amp; Machine Learning Engineer with a strong background in software engineering.
         My career focus is AI research — leveraging machine learning to make a significant
         positive impact on millions of lives. I specialize in <strong>AI Safety and alignment</strong>,
@@ -60,11 +57,10 @@
         networks to understand their reasoning and enforce safety barriers.
       </p>
       <div class="hero__actions">
-        <a href="research.html" class="btn btn-primary">View Research →</a>
-        <a href="blog.html" class="btn btn-outline">Read Blog</a>
+        <a href="research.html" class="btn btn-primary" data-i18n="index.viewResearch">View Research →</a>
+        <a href="blog.html"     class="btn btn-outline"  data-i18n="index.readBlog">Read Blog</a>
       </div>
       <div class="hero__socials">
-        <!-- Update href values with your real URLs -->
         <a href="https://www.linkedin.com/in/brunopayang/" target="_blank" rel="noopener" class="social-link" id="link-linkedin">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           LinkedIn
@@ -79,7 +75,6 @@
         </a>
       </div>
     </div>
-
     <div class="hero__avatar">
       <img src="assets/profile.jpg" alt="Bruno Ganontha" loading="eager">
     </div>
@@ -88,44 +83,50 @@
 
 <!-- ===== RESEARCH INTERESTS ===== -->
 <section class="container section">
-  <h2 class="section-title">Research <span>Interests</span></h2>
+  <h2 class="section-title" data-i18n-html="index.h2ResearchInterests">Research <span>Interests</span></h2>
   <div class="section-divider"></div>
   <div class="interests-grid">
     <div class="interest-item">
       <div class="interest-icon"><i data-lucide="shield"></i></div>
-      <div class="interest-label">AI Safety &amp; Alignment</div>
-      <div class="interest-desc">Enforcing safety barriers in AI systems by understanding and steering model behavior at the representation level.</div>
+      <div class="interest-label" data-i18n="interests.safety_label">AI Safety &amp; Alignment</div>
+      <div class="interest-desc"  data-i18n="interests.safety_desc">Enforcing safety barriers in AI systems by understanding and steering model behavior at the representation level.</div>
     </div>
     <div class="interest-item">
       <div class="interest-icon"><i data-lucide="cpu"></i></div>
-      <div class="interest-label">Mechanistic Interpretability</div>
-      <div class="interest-desc">Reverse-engineering neural networks to understand their internal reasoning processes and thought patterns.</div>
+      <div class="interest-label" data-i18n="interests.mech_label">Mechanistic Interpretability</div>
+      <div class="interest-desc"  data-i18n="interests.mech_desc">Reverse-engineering neural networks to understand their internal reasoning processes and thought patterns.</div>
     </div>
     <div class="interest-item">
       <div class="interest-icon"><i data-lucide="shield-alert"></i></div>
-      <div class="interest-label">Robustness &amp; Adversarial ML</div>
-      <div class="interest-desc">Evaluating model robustness against natural degradations and adversarial attacks to identify and close safety gaps.</div>
+      <div class="interest-label" data-i18n="interests.robust_label">Robustness &amp; Adversarial ML</div>
+      <div class="interest-desc"  data-i18n="interests.robust_desc">Evaluating model robustness against natural degradations and adversarial attacks to identify and close safety gaps.</div>
     </div>
     <div class="interest-item">
       <div class="interest-icon"><i data-lucide="globe"></i></div>
-      <div class="interest-label">Low-Resource NLP</div>
-      <div class="interest-desc">Building reliable NLP systems for African and other low-resource languages, including robust RAG with abstention mechanisms.</div>
+      <div class="interest-label" data-i18n="interests.nlp_label">Low-Resource NLP</div>
+      <div class="interest-desc"  data-i18n="interests.nlp_desc">Building reliable NLP systems for African and other low-resource languages, including robust RAG with abstention mechanisms.</div>
     </div>
   </div>
 </section>
 
 <!-- ===== FEATURED RESEARCH ===== -->
 <section class="container section">
-  <h2 class="section-title">Featured <span>Research</span></h2>
-  <p class="section-subtitle">Selected projects — <a href="research.html">view all research →</a></p>
+  <h2 class="section-title" data-i18n-html="index.h2FeaturedResearch">Featured <span>Research</span></h2>
+  <p class="section-subtitle">
+    <span data-i18n="index.selectedProjects">Selected projects —</span>
+    <a href="research.html" data-i18n="index.viewAllResearch">view all research →</a>
+  </p>
   <div class="section-divider"></div>
   <div class="cards-grid" id="featured-research"></div>
 </section>
 
 <!-- ===== RECENT POSTS ===== -->
 <section class="container section">
-  <h2 class="section-title">Recent <span>Posts</span></h2>
-  <p class="section-subtitle">Thoughts on interpretability, safety, and ML — <a href="blog.html">view all posts →</a></p>
+  <h2 class="section-title" data-i18n-html="index.h2RecentPosts">Recent <span>Posts</span></h2>
+  <p class="section-subtitle">
+    <span data-i18n="index.thoughtsOn">Thoughts on interpretability, safety, and ML —</span>
+    <a href="blog.html" data-i18n="index.viewAllPosts">view all posts →</a>
+  </p>
   <div class="section-divider"></div>
   <div class="blog-grid" id="recent-posts"></div>
 </section>
@@ -135,45 +136,50 @@
   <div class="footer__inner">
     <p class="footer__name">Bruno<span>.</span>Ganontha</p>
     <nav class="footer__links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="research.html">Research</a>
-      <a href="blog.html">Blog</a>
-      <a href="videos.html">Videos</a>
+      <a href="index.html"    data-i18n="nav.home">Home</a>
+      <a href="about.html"    data-i18n="nav.about">About</a>
+      <a href="research.html" data-i18n="nav.research">Research</a>
+      <a href="blog.html"     data-i18n="nav.blog">Blog</a>
+      <a href="videos.html"   data-i18n="nav.videos">Videos</a>
     </nav>
-    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha &middot; Built with ☕ &amp; curiosity</p>
+    <p class="footer__copy">&copy; <span id="footer-year"></span> Bruno Ganontha &middot; <span data-i18n="footer.built">Built with ☕ &amp; curiosity</span></p>
   </div>
 </footer>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/translations.js"></script>
 <script src="js/research-data.js"></script>
 <script src="js/blog-data.js"></script>
 <script src="js/main.js"></script>
 <script>
   document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-  // Render featured research (first 2 projects)
+  const t = key => (window.I18n ? window.I18n.t(key) : key);
+  const STATUS_COLORS = { Ongoing:'#F59E0B', Completed:'#10B981', Published:'#10B981', Preprint:'#6366F1', 'In Review':'#0EA5E9' };
+
+  // Render featured research (first 2 projects, localized)
   const featuredEl = document.getElementById('featured-research');
-  RESEARCH_PROJECTS.slice(0, 2).forEach(p => {
-    const STATUS_COLORS = { 'Ongoing': '#F59E0B', 'Completed': '#10B981', 'Published': '#10B981', 'Preprint': '#6366F1', 'In Review': '#0EA5E9' };
-    const statusColor = STATUS_COLORS[p.status] || '#6366F1';
+  getResearchProjectsLocalized().slice(0, 2).forEach(p => {
+    const col = STATUS_COLORS[p.status] || '#6366F1';
+    const statusLabel = t('status.' + p.status);
     featuredEl.innerHTML += `
       <div class="card">
-        <div class="card__badge" style="background: ${statusColor}22; color: ${statusColor}">● ${p.status}</div>
+        <div class="card__badge" style="background:${col}22;color:${col}">● ${statusLabel}</div>
         <h3 class="card__title">${p.title}</h3>
         <p class="card__desc">${p.description.substring(0, 160)}…</p>
-        <div class="card__tags">${p.tags.slice(0,3).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="card__tags">${p.tags.slice(0,3).map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
         <div class="card__links">
           ${p.links.map(l => `<a href="${l.url}" class="card__link" target="_blank">↗ ${l.label}</a>`).join('')}
-          <a href="research.html" class="card__link">View all →</a>
+          <a href="research.html" class="card__link">${t('index.viewAllResearch')}</a>
         </div>
       </div>`;
   });
 
-  // Render recent blog posts (first 3)
+  // Render recent blog posts (first 3, localized)
   const postsEl = document.getElementById('recent-posts');
-  BLOG_POSTS.slice(0, 3).forEach(p => {
+  getBlogPostsLocalized().slice(0, 3).forEach(p => {
     const d = formatDate(p.date);
     postsEl.innerHTML += `
       <a href="blog-post.html?id=${p.id}" class="blog-card" style="text-decoration:none;">
@@ -190,11 +196,12 @@
           <div class="blog-card__excerpt">${p.excerpt}</div>
           <div class="blog-card__footer">
             <span class="icon-inline"><i data-lucide="clock"></i>${p.readTime}</span>
-            <span class="blog-card__read-more">Read more →</span>
+            <span class="blog-card__read-more">${t('blog.readMore')}</span>
           </div>
         </div>
       </a>`;
   });
+
   lucide.createIcons();
 </script>
 </body>
