@@ -92,22 +92,22 @@
   <div class="section-divider"></div>
   <div class="interests-grid">
     <div class="interest-item">
-      <div class="interest-icon">🛡️</div>
+      <div class="interest-icon"><i data-lucide="shield"></i></div>
       <div class="interest-label">AI Safety &amp; Alignment</div>
       <div class="interest-desc">Enforcing safety barriers in AI systems by understanding and steering model behavior at the representation level.</div>
     </div>
     <div class="interest-item">
-      <div class="interest-icon">🔬</div>
+      <div class="interest-icon"><i data-lucide="cpu"></i></div>
       <div class="interest-label">Mechanistic Interpretability</div>
       <div class="interest-desc">Reverse-engineering neural networks to understand their internal reasoning processes and thought patterns.</div>
     </div>
     <div class="interest-item">
-      <div class="interest-icon">⚔️</div>
+      <div class="interest-icon"><i data-lucide="shield-alert"></i></div>
       <div class="interest-label">Robustness &amp; Adversarial ML</div>
       <div class="interest-desc">Evaluating model robustness against natural degradations and adversarial attacks to identify and close safety gaps.</div>
     </div>
     <div class="interest-item">
-      <div class="interest-icon">🌍</div>
+      <div class="interest-icon"><i data-lucide="globe"></i></div>
       <div class="interest-label">Low-Resource NLP</div>
       <div class="interest-desc">Building reliable NLP systems for African and other low-resource languages, including robust RAG with abstention mechanisms.</div>
     </div>
@@ -146,6 +146,7 @@
 </footer>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="js/research-data.js"></script>
 <script src="js/blog-data.js"></script>
 <script src="js/main.js"></script>
@@ -188,12 +189,13 @@
           <div class="blog-card__title">${p.title}</div>
           <div class="blog-card__excerpt">${p.excerpt}</div>
           <div class="blog-card__footer">
-            <span>⏱ ${p.readTime}</span>
+            <span class="icon-inline"><i data-lucide="clock"></i>${p.readTime}</span>
             <span class="blog-card__read-more">Read more →</span>
           </div>
         </div>
       </a>`;
   });
+  lucide.createIcons();
 </script>
 </body>
 </html>

@@ -74,6 +74,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="js/research-data.js"></script>
 <script src="js/main.js"></script>
 <script>
@@ -107,7 +108,7 @@
 
     if (projects.length === 0) {
       grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-        <div class="empty-state__icon">🔍</div>
+        <div class="empty-state__icon"><i data-lucide="search-x"></i></div>
         <div class="empty-state__text">No projects in this category yet.</div>
       </div>`;
       return;
@@ -136,9 +137,11 @@
     tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderCards(btn.dataset.filter);
+    lucide.createIcons();
   });
 
   renderCards('all');
+  lucide.createIcons();
 </script>
 </body>
 </html>

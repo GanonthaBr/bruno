@@ -70,6 +70,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
   onload="renderMathInBody()"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="js/blog-data.js"></script>
 <script src="js/main.js"></script>
 <script>
@@ -99,7 +100,7 @@
     if (!postId) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state__icon">❌</div>
+          <div class="empty-state__icon"><i data-lucide="circle-x"></i></div>
           <div class="empty-state__text">No post specified. <a href="blog.html">Return to blog</a>.</div>
         </div>`;
       return;
@@ -110,7 +111,7 @@
     if (!post) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state__icon">🔍</div>
+          <div class="empty-state__icon"><i data-lucide="search-x"></i></div>
           <div class="empty-state__text">Post not found. <a href="blog.html">Return to blog</a>.</div>
         </div>`;
       return;
@@ -127,8 +128,8 @@
           <div class="post-category">${post.category}</div>
           <h1 class="post-title">${post.title}</h1>
           <div class="post-meta">
-            <span>📅 ${d.full}</span>
-            <span>⏱ ${post.readTime}</span>
+            <span class="icon-inline"><i data-lucide="calendar"></i>${d.full}</span>
+            <span class="icon-inline"><i data-lucide="clock"></i>${post.readTime}</span>
           </div>
         </header>
         <div class="post-body">${post.content}</div>
@@ -142,6 +143,7 @@
     if (typeof renderMathInElement !== 'undefined') {
       renderMathInBody();
     }
+    lucide.createIcons();
   }
 
   // Run after DOM and data are ready

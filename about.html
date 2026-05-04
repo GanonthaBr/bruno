@@ -42,8 +42,8 @@
   <h1 class="page-header__title">Bruno Ganontha</h1>
   <p class="page-header__subtitle" id="about-bio"></p>
   <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-    <a href="assets/cv.pdf" target="_blank" rel="noopener" class="btn btn-primary" download>↓ Download CV</a>
-    <a href="mailto:bpayang@andrew.cmu.edu" class="btn btn-outline">✉ Get in Touch</a>
+    <a href="assets/cv.pdf" target="_blank" rel="noopener" class="btn btn-primary" download><i data-lucide="download"></i> Download CV</a>
+    <a href="mailto:bpayang@andrew.cmu.edu" class="btn btn-outline"><i data-lucide="mail"></i> Get in Touch</a>
   </div>
 </header>
 
@@ -103,6 +103,7 @@
 </footer>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="js/cv-data.js"></script>
 <script src="js/main.js"></script>
 <script>
@@ -183,6 +184,7 @@
         </div>`;
     });
   }
+  lucide.createIcons();
 </script>
 </body>
 </html>

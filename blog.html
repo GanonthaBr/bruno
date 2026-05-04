@@ -73,6 +73,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="js/blog-data.js"></script>
 <script src="js/main.js"></script>
 <script>
@@ -97,7 +98,7 @@
 
     if (posts.length === 0) {
       listEl.innerHTML = `<div class="empty-state">
-        <div class="empty-state__icon">✍️</div>
+        <div class="empty-state__icon"><i data-lucide="pen-line"></i></div>
         <div class="empty-state__text">No posts in this category yet.</div>
       </div>`;
       return;
@@ -119,7 +120,7 @@
             <div class="blog-card__title">${p.title}</div>
             <div class="blog-card__excerpt">${p.excerpt}</div>
             <div class="blog-card__footer">
-              <span>⏱ ${p.readTime}</span>
+              <span class="icon-inline"><i data-lucide="clock"></i>${p.readTime}</span>
               <span class="blog-card__read-more">Read more →</span>
             </div>
           </div>
@@ -133,9 +134,11 @@
     tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderPosts(btn.dataset.filter);
+    lucide.createIcons();
   });
 
   renderPosts('all');
+  lucide.createIcons();
 </script>
 </body>
 </html>
