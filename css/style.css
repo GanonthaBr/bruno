@@ -1046,6 +1046,40 @@ ul { list-style: none; }
   .award-item { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 
+/* Coming soon / placeholder state */
+.coming-soon {
+  text-align: center;
+  padding: 80px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.coming-soon__icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: var(--accent);
+}
+.coming-soon__icon svg { width: 30px; height: 30px; }
+.coming-soon__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.coming-soon__text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+
 /* Inline icon (clock, calendar, etc.) */
 .icon-inline { display: inline-flex; align-items: center; gap: 4px; }
 .icon-inline svg { width: 13px; height: 13px; flex-shrink: 0; }

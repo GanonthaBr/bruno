@@ -60,18 +60,6 @@
 
 <!-- ===== VIDEO GRID ===== -->
 <main class="container" style="padding-bottom: 80px;">
-  <div id="placeholder-notice" class="hidden" style="
-    background: var(--accent-subtle);
-    border: 1px solid var(--accent-border);
-    border-radius: var(--radius-lg);
-    padding: 16px 20px;
-    margin-bottom: 28px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  ">
-    <i data-lucide="pin" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:4px;"></i><strong style="color:var(--accent)">Placeholder videos shown</strong> — Edit <code>js/videos-data.js</code>
-    to add your own YouTube video IDs.
-  </div>
   <div class="video-grid" id="video-grid"></div>
 </main>
 
@@ -97,66 +85,76 @@
   document.getElementById('footer-year').textContent = new Date().getFullYear();
   document.getElementById('channel-btn').href = YOUTUBE_CHANNEL_URL;
 
-  // Show placeholder notice if using sample videos
+  const grid = document.getElementById('video-grid');
+  const filterContainer = document.getElementById('video-filter-tabs').parentElement;
+
   if (VIDEOS.length === 0) {
-    document.getElementById('placeholder-notice').classList.remove('hidden');
-  }
-
-  // Build category filter tabs
-  const categories = [...new Set(ALL_VIDEOS.map(v => v.category))];
-  const tabsEl = document.getElementById('video-filter-tabs');
-  categories.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-tab';
-    btn.dataset.filter = cat;
-    btn.textContent = cat;
-    tabsEl.appendChild(btn);
-  });
-
-  function renderVideos(filter) {
-    const grid = document.getElementById('video-grid');
-    const videos = filter === 'all'
-      ? ALL_VIDEOS
-      : ALL_VIDEOS.filter(v => v.category === filter);
-
-    if (videos.length === 0) {
-      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-        <div class="empty-state__icon"><i data-lucide="video-off"></i></div>
-        <div class="empty-state__text">No videos in this category yet.</div>
+    // No videos yet — hide filter tabs, show professional coming-soon message
+    filterContainer.style.display = 'none';
+    grid.style.display = 'block';
+    grid.innerHTML = `
+      <div class="coming-soon">
+        <div class="coming-soon__icon"><i data-lucide="video"></i></div>
+        <h2 class="coming-soon__title">Videos Coming Soon</h2>
+        <p class="coming-soon__text">
+          I'm working on video content covering AI safety, mechanistic interpretability,
+          and machine learning research. Subscribe to the channel to get notified when the first videos drop.
+        </p>
+        <a href="${YOUTUBE_CHANNEL_URL}" target="_blank" rel="noopener" class="btn btn-primary">
+          Subscribe on YouTube
+        </a>
       </div>`;
-      return;
+    lucide.createIcons();
+  } else {
+    // Build filter tabs and render video grid
+    const categories = [...new Set(VIDEOS.map(v => v.category))];
+    const tabsEl = document.getElementById('video-filter-tabs');
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-tab';
+      btn.dataset.filter = cat;
+      btn.textContent = cat;
+      tabsEl.appendChild(btn);
+    });
+
+    function renderVideos(filter) {
+      const videos = filter === 'all' ? VIDEOS : VIDEOS.filter(v => v.category === filter);
+      if (videos.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-state__icon"><i data-lucide="video-off"></i></div>
+          <div class="empty-state__text">No videos in this category yet.</div>
+        </div>`;
+        lucide.createIcons();
+        return;
+      }
+      grid.innerHTML = videos.map(v => `
+        <div class="video-card">
+          <div class="video-card__embed">
+            <iframe
+              src="https://www.youtube.com/embed/${v.youtubeId}"
+              title="${v.title}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy">
+            </iframe>
+          </div>
+          <div class="video-card__info">
+            <div class="video-card__title">${v.title}</div>
+            ${v.description ? `<div class="video-card__desc">${v.description}</div>` : ''}
+          </div>
+        </div>`).join('');
+      lucide.createIcons();
     }
 
-    grid.innerHTML = videos.map(v => `
-      <div class="video-card">
-        <div class="video-card__embed">
-          <iframe
-            src="https://www.youtube.com/embed/${v.youtubeId}"
-            title="${v.title}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            loading="lazy">
-          </iframe>
-        </div>
-        <div class="video-card__info">
-          <div class="video-card__title">${v.title}</div>
-          ${v.description ? `<div class="video-card__desc">${v.description}</div>` : ''}
-        </div>
-      </div>`
-    ).join('');
+    tabsEl.addEventListener('click', e => {
+      const btn = e.target.closest('.filter-tab');
+      if (!btn) return;
+      tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderVideos(btn.dataset.filter);
+    });
+
+    renderVideos('all');
   }
-
-  tabsEl.addEventListener('click', e => {
-    const btn = e.target.closest('.filter-tab');
-    if (!btn) return;
-    tabsEl.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderVideos(btn.dataset.filter);
-    lucide.createIcons();
-  });
-
-  renderVideos('all');
-  lucide.createIcons();
 </script>
 </body>
 </html>
