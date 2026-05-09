@@ -327,7 +327,274 @@ $$\\mathcal{L} = \\|x - \\hat{x}\\|_2^2 + \\lambda \\|f\\|_1$$
 <p>لا أعتقد أن نماذج اللغة الكبيرة الحالية خطيرة بشكل خاص. لكن منحنى القدرات حادٌّ، وقدرتنا على فهم سلوك النماذج وتدقيقها لم تواكب الوتيرة ذاتها. بناء الأسس العلمية الآن — حين تكون المخاطر أقل — هو المسار المسؤول.</p>`
       }
     }
+  },
+{
+  id: "what-is-a-neural-network",
+  title: "What Even Is a Neural Network? A Beginner's Honest Explanation",
+  category: "Deep Learning",
+  date: "2026-05-12",
+  readTime: "8 min read",
+  excerpt: "Your brain has 86 billion neurons. A neural network has a few thousand fake ones. Yet it can recognize your face, translate speech, and beat world champions at chess. Here is how — from scratch, no background assumed.",
+  content: `
+<p>Your brain is doing something extraordinary right now. It is parsing these symbols, retrieving their meanings, constructing sentences, and building understanding — all in a fraction of a second, without any conscious effort. The machinery behind that is roughly 86 billion neurons, each one a tiny biological switch, connected in a network of almost incomprehensible complexity.</p>
+
+<p>A neural network does something far simpler. It takes a handful of artificial neurons — sometimes thousands, sometimes billions — connects them in layers, and adjusts the strength of those connections until the network gets good at a specific task. No biology. No consciousness. Just math.</p>
+
+<p>And yet, with enough of these artificial neurons and the right training, neural networks can recognize your face in a photo, transcribe your speech in real time, beat world champions at chess, and generate text that reads like a human wrote it.</p>
+
+<p>How? That is exactly what this article is about.</p>
+
+<h2>Starting Where It All Started: The Biological Neuron</h2>
+
+<p>The design of artificial neural networks was directly inspired by the brain. So it helps to start there.</p>
+
+<p>A biological neuron has three main parts. Dendrites receive electrical signals from neighboring neurons. The cell body collects and sums those signals. And if the total crosses a certain threshold, the neuron fires — sending a signal down its axon to the next set of neurons.</p>
+
+<p>The key insight is that this is fundamentally simple: <strong>accumulate inputs, compare to a threshold, fire or do not fire</strong>. That is the entire operation of a single neuron. The artificial version copies this logic almost exactly.</p>
+
+<h2>The Perceptron: One Artificial Neuron</h2>
+
+<p>An artificial neuron — called a <strong>perceptron</strong> — works as follows:</p>
+
+<ul>
+  <li>Take a set of inputs: x₁, x₂, x₃, ... xₙ</li>
+  <li>Multiply each input by a corresponding weight: w₁, w₂, w₃, ... wₙ</li>
+  <li>Sum everything up plus a bias term b: z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</li>
+  <li>Apply an activation function to z to produce the output ŷ</li>
+</ul>
+
+<p>The weighted sum z captures how much each input "matters." The activation function then decides what to do with that sum — whether to fire, and how strongly.</p>
+
+<p>The bias b plays the role of a threshold: it shifts the weighted sum up or down, effectively setting how easy or hard it is for the neuron to activate. Without a bias, every perceptron would be forced to pass through the origin, which severely limits what it can learn.</p>
+
+<h2>What the Weights Actually Mean</h2>
+
+<p>The weights are where all the learned knowledge lives. A large positive weight on input xᵢ means: "pay close attention to this input — when it is high, I am more likely to activate." A weight near zero means: "this input barely matters." A negative weight means: "this input actively suppresses my activation."</p>
+
+<p>Training a neural network is, at its core, the process of finding the right values for all the weights and biases. Everything else — the architecture, the optimization algorithm, the loss function — is infrastructure that serves this one goal.</p>
+
+<h2>The Soft Perceptron: Why We Use Sigmoid Instead of a Step Function</h2>
+
+<p>Early perceptrons used a hard threshold: output 1 if the weighted sum exceeds zero, output 0 otherwise. This is mathematically clean but has a fatal flaw: it is not differentiable. At the threshold, the function jumps discontinuously. Everywhere else, its slope is exactly zero.</p>
+
+<p>Why does this matter? Because the way neural networks learn — gradient descent — requires us to compute how much the output changes when we nudge a weight slightly. If the activation function has zero slope almost everywhere, that information is destroyed. The network cannot learn.</p>
+
+<p>The solution is to replace the hard step with a smooth curve. The most classical choice is the <strong>sigmoid function</strong>:</p>
+
+<p>σ(z) = 1 / (1 + e⁻ᶻ)</p>
+
+<p>The sigmoid squashes any value of z into the range (0, 1), approaching 0 for very negative inputs and 1 for very positive ones. Crucially, it does this smoothly — it has a well-defined slope at every point. That slope is what makes learning possible.</p>
+
+<h2>The Limits of a Single Neuron</h2>
+
+<p>A single perceptron can only solve <strong>linearly separable</strong> problems. Geometrically, it draws a single straight line through the input space, putting one class on each side.</p>
+
+<p>This sounds useful, and it is — for simple problems. But the world is full of non-linearly separable problems. The canonical example is XOR: given two binary inputs, output 1 if exactly one of them is 1, output 0 otherwise. Draw this on a 2D grid and you will immediately see that no single straight line can separate the 1s from the 0s.</p>
+
+<p>A single neuron cannot solve XOR. This is not a limitation of any particular design choice — it is a mathematical impossibility for any linear classifier. This limitation was identified early in the history of neural networks and nearly killed the field. The solution turned out to be straightforward: use more than one neuron, and stack them into layers.</p>
+
+<h2>The Multi-Layer Perceptron: Where the Magic Happens</h2>
+
+<p>A <strong>multi-layer perceptron (MLP)</strong> connects perceptrons in layers, where the outputs of one layer feed as inputs into the next. Each layer transforms the data into a new representation, and the final layer produces the network's output.</p>
+
+<p>The key insight is what happens to the input space as data flows through layers. Each layer applies a linear transformation followed by a nonlinear activation. The combination of these operations warps, stretches, and rotates the input space. By the time the data reaches the output layer, what was once a tangled, non-separable mess has been transformed into something that <em>can</em> be separated by a simple line.</p>
+
+<p>This is why neural networks are powerful: <strong>they learn to transform the problem, not just to solve it in the original space.</strong></p>
+
+<h2>What "Deep" Actually Means</h2>
+
+<p>"Deep" in deep learning refers simply to the number of layers. A network with at least three layers (input, one or more hidden layers, output) is considered deep. More layers means the network can learn more abstract representations.</p>
+
+<p>Consider an image classifier. The first hidden layer might learn to detect simple edges and color gradients. The second layer combines those into shapes and textures. The third combines shapes into object parts. The fourth combines parts into recognizable objects. Each layer builds on the abstractions of the previous one — this hierarchical representation is what makes deep networks dramatically more powerful than shallow ones for complex real-world problems.</p>
+
+<h2>Parameters: What Gets Learned</h2>
+
+<p>Every edge between two neurons corresponds to a weight. Every neuron has a bias. Together, these are called the <strong>parameters</strong> of the network — and they are the only things that change during training.</p>
+
+<p>A small network might have tens of thousands of parameters. ResNet-50, a widely used image model, has 25 million. GPT-3 has 175 billion. Every single one of those numbers was learned from data — not manually set by any human. This is the definition of machine learning: the architecture defines the <em>structure</em> of the function; the parameters define the <em>specific function</em> that structure computes.</p>
+
+<h2>Putting It Together</h2>
+
+<p>A neural network is a layered composition of simple units. Each unit computes a weighted sum of its inputs, adds a bias, and passes the result through a smooth nonlinear function. Stacked into layers, these units can represent extraordinarily complex mappings — from raw pixels to object labels, from waveforms to transcriptions, from board positions to winning moves.</p>
+
+<p>The complexity does not come from any single clever neuron. It emerges from depth, from nonlinearity, and from parameters adjusted through training on examples. Understanding what a network <em>is</em> — this layer of perceptrons connected to that layer, computing these weighted sums — is the foundation for understanding everything that follows.</p>
+
+<h2>What's Next</h2>
+
+<p>We know what a neural network is. We know its structure. But we have not asked the most important question yet: <strong>what kinds of functions can a neural network actually represent?</strong></p>
+
+<p>Is there a limit? Can a network learn <em>any</em> function, or only certain kinds? That question has a remarkable answer — and a theorem to back it up. In the next article, we cover the Universal Approximation Theorem: the mathematical result that justifies all of deep learning.</p>`,
+
+  translations: {
+    fr: {
+      title: "C'est quoi un réseau de neurones ? Une explication honnête pour débutants",
+      category: "Apprentissage Profond",
+      readTime: "8 min de lecture",
+      excerpt: "Votre cerveau possède 86 milliards de neurones. Un réseau de neurones en possède quelques milliers, artificiels. Pourtant il peut reconnaître votre visage, traduire des discours et battre des champions du monde aux échecs. Voici comment — sans aucun prérequis.",
+      content: `
+<p>Votre cerveau accomplit quelque chose d'extraordinaire en ce moment. Il décode ces symboles, en récupère les significations, construit des phrases et développe une compréhension — le tout en une fraction de seconde, sans aucun effort conscient. Le mécanisme derrière tout cela, ce sont environ 86 milliards de neurones, chacun étant un minuscule interrupteur biologique, connectés dans un réseau d'une complexité presque incompréhensible.</p>
+
+<p>Un réseau de neurones artificiel fait quelque chose de bien plus simple. Il prend une poignée de neurones artificiels — parfois des milliers, parfois des milliards — les connecte en couches, et ajuste la force de ces connexions jusqu'à ce que le réseau devienne performant sur une tâche spécifique. Pas de biologie. Pas de conscience. Juste des mathématiques.</p>
+
+<p>Et pourtant, avec suffisamment de ces neurones artificiels et un entraînement approprié, les réseaux de neurones peuvent reconnaître votre visage sur une photo, transcrire votre discours en temps réel, battre des champions du monde aux échecs, et générer du texte qui semble écrit par un humain.</p>
+
+<p>Comment ? C'est précisément ce que cet article explique.</p>
+
+<h2>Commencer là où tout a commencé : le neurone biologique</h2>
+
+<p>La conception des réseaux de neurones artificiels s'est directement inspirée du cerveau. Il est donc utile de commencer par là.</p>
+
+<p>Un neurone biologique possède trois parties principales. Les dendrites reçoivent des signaux électriques des neurones voisins. Le corps cellulaire collecte et additionne ces signaux. Et si le total dépasse un certain seuil, le neurone se déclenche — envoyant un signal le long de son axone vers le prochain ensemble de neurones.</p>
+
+<p>L'idée clé est que c'est fondamentalement simple : <strong>accumuler les entrées, comparer à un seuil, se déclencher ou non</strong>. C'est l'intégralité du fonctionnement d'un seul neurone. La version artificielle copie cette logique presque exactement.</p>
+
+<h2>Le Perceptron : un neurone artificiel</h2>
+
+<p>Un neurone artificiel — appelé <strong>perceptron</strong> — fonctionne comme suit :</p>
+
+<ul>
+  <li>Prendre un ensemble d'entrées : x₁, x₂, x₃, ... xₙ</li>
+  <li>Multiplier chaque entrée par un poids correspondant : w₁, w₂, w₃, ... wₙ</li>
+  <li>Tout additionner avec un terme de biais b : z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</li>
+  <li>Appliquer une fonction d'activation à z pour produire la sortie ŷ</li>
+</ul>
+
+<p>La somme pondérée z capture l'importance de chaque entrée. La fonction d'activation décide ensuite quoi faire de cette somme — s'il faut se déclencher, et avec quelle intensité.</p>
+
+<p>Le biais b joue le rôle d'un seuil : il déplace la somme pondérée vers le haut ou vers le bas, déterminant ainsi la facilité ou la difficulté d'activation du neurone. Sans biais, chaque perceptron serait contraint de passer par l'origine, ce qui limiterait considérablement ce qu'il peut apprendre.</p>
+
+<h2>Ce que signifient vraiment les poids</h2>
+
+<p>Les poids contiennent toute la connaissance apprise. Un poids positif élevé sur l'entrée xᵢ signifie : « prêter une attention particulière à cette entrée — quand elle est élevée, je suis plus susceptible de m'activer. » Un poids proche de zéro signifie : « cette entrée a peu d'importance. » Un poids négatif signifie : « cette entrée supprime activement mon activation. »</p>
+
+<p>Entraîner un réseau de neurones, c'est fondamentalement trouver les bonnes valeurs pour tous les poids et biais. Tout le reste — l'architecture, l'algorithme d'optimisation, la fonction de perte — est une infrastructure au service de cet unique objectif.</p>
+
+<h2>Le perceptron souple : pourquoi on utilise la sigmoïde</h2>
+
+<p>Les premiers perceptrons utilisaient un seuil dur : sortie 1 si la somme pondérée dépasse zéro, sortie 0 sinon. C'est mathématiquement propre mais possède un défaut fatal : ce n'est pas différentiable. Au seuil, la fonction saute discontinûment. Partout ailleurs, sa pente est exactement zéro.</p>
+
+<p>Pourquoi est-ce important ? Parce que la façon dont les réseaux de neurones apprennent — la descente de gradient — nécessite de calculer combien la sortie change quand on ajuste légèrement un poids. Si la fonction d'activation a une pente nulle presque partout, cette information est détruite. Le réseau ne peut pas apprendre.</p>
+
+<p>La solution est de remplacer le saut brutal par une courbe lisse. Le choix le plus classique est la <strong>fonction sigmoïde</strong> :</p>
+
+<p>σ(z) = 1 / (1 + e⁻ᶻ)</p>
+
+<p>La sigmoïde compresse toute valeur de z dans l'intervalle (0, 1), tendant vers 0 pour les entrées très négatives et vers 1 pour les entrées très positives. Surtout, elle le fait de manière lisse — elle possède une pente bien définie en tout point. C'est cette pente qui rend l'apprentissage possible.</p>
+
+<h2>Les limites d'un seul neurone</h2>
+
+<p>Un seul perceptron ne peut résoudre que des problèmes <strong>linéairement séparables</strong>. Géométriquement, il trace une seule ligne droite dans l'espace des entrées, plaçant une classe de chaque côté.</p>
+
+<p>Cela semble utile, et c'est vrai — pour les problèmes simples. Mais le monde est plein de problèmes non linéairement séparables. L'exemple canonique est XOR : étant donné deux entrées binaires, produire 1 si exactement l'une d'elles est 1, et 0 sinon. Aucune ligne droite ne peut séparer les 1 des 0 — c'est une impossibilité mathématique pour tout classificateur linéaire. La solution : empiler des neurones en couches.</p>
+
+<h2>Le Perceptron Multi-Couches : là où la magie opère</h2>
+
+<p>Un <strong>perceptron multi-couches (MLP)</strong> connecte des perceptrons en couches, où les sorties d'une couche servent d'entrées à la suivante. Chaque couche transforme les données en une nouvelle représentation, et la couche finale produit la sortie du réseau.</p>
+
+<p>L'idée clé est ce qui arrive à l'espace des entrées au fil des couches. Chaque couche applique une transformation linéaire suivie d'une activation non linéaire. La combinaison de ces opérations déforme, étire et fait pivoter l'espace des entrées. Au moment où les données atteignent la couche de sortie, ce qui était autrefois un enchevêtrement inséparable a été transformé en quelque chose qui <em>peut</em> être séparé.</p>
+
+<p>C'est pourquoi les réseaux de neurones sont puissants : <strong>ils apprennent à transformer le problème, pas seulement à le résoudre dans l'espace original.</strong></p>
+
+<h2>Ce que signifie vraiment "profond"</h2>
+
+<p>"Profond" dans l'apprentissage profond désigne simplement le nombre de couches. Un réseau avec au moins trois couches est considéré profond. Plus il y a de couches, plus le réseau peut apprendre des représentations abstraites — des bords simples aux textures, aux parties d'objets, jusqu'aux objets reconnaissables. Chaque couche s'appuie sur les abstractions de la précédente.</p>
+
+<h2>Les paramètres : ce qui est appris</h2>
+
+<p>Chaque connexion entre deux neurones correspond à un poids. Chaque neurone possède un biais. Ensemble, ils forment les <strong>paramètres</strong> du réseau — les seules choses qui changent pendant l'entraînement.</p>
+
+<p>Un petit réseau peut avoir des dizaines de milliers de paramètres. ResNet-50 en a 25 millions. GPT-3 en a 175 milliards. Chacun de ces nombres a été appris à partir de données — aucun n'a été défini manuellement par un humain.</p>
+
+<h2>Ce qui vient ensuite</h2>
+
+<p>Nous savons ce qu'est un réseau de neurones. Mais nous n'avons pas encore posé la question la plus importante : <strong>quels types de fonctions un réseau de neurones peut-il réellement représenter ?</strong> Cette question a une réponse remarquable — et un théorème pour l'étayer. Dans le prochain article, nous abordons le Théorème d'Approximation Universelle.</p>`
+    },
+
+    ar: {
+      title: "ما هي الشبكة العصبية؟ شرح صادق للمبتدئين",
+      category: "التعلم العميق",
+      readTime: "8 دقائق للقراءة",
+      excerpt: "يمتلك دماغك 86 مليار خلية عصبية. الشبكة العصبية الاصطناعية تمتلك بضعة آلاف منها. ومع ذلك، تستطيع التعرف على وجهك، وترجمة الكلام، وهزيمة أبطال العالم في الشطرنج. إليك كيف — دون أي خلفية مسبقة.",
+      content: `
+<p>يؤدي دماغك الآن شيئاً استثنائياً. إنه يفسّر هذه الرموز، ويسترجع معانيها، ويبني جملاً، ويطوّر فهماً — كل ذلك في جزء من الثانية، دون أي جهد واعٍ. الآلية وراء ذلك هي نحو 86 مليار خلية عصبية، كلٌّ منها مفتاح بيولوجي صغير، متصلة في شبكة بالغة التعقيد.</p>
+
+<p>أما الشبكة العصبية الاصطناعية فتفعل شيئاً أبسط بكثير. تأخذ حفنة من الخلايا العصبية الاصطناعية — أحياناً آلافاً، وأحياناً مليارات — تربطها في طبقات، وتضبط قوة تلك الروابط حتى تتقن الشبكة مهمة محددة. لا أحياء، لا وعي، فقط رياضيات.</p>
+
+<p>ومع ذلك، بعدد كافٍ من هذه الخلايا والتدريب المناسب، تستطيع الشبكات العصبية التعرف على وجهك في صورة، ونقل كلامك نصياً في الوقت الفعلي، وهزيمة أبطال العالم في الشطرنج، وتوليد نصوص تبدو وكأنها كُتبت بقلم إنسان.</p>
+
+<p>كيف؟ هذا بالضبط ما يشرحه هذا المقال.</p>
+
+<h2>البداية من حيث بدأ كل شيء: الخلية العصبية البيولوجية</h2>
+
+<p>استُلهم تصميم الشبكات العصبية الاصطناعية مباشرةً من الدماغ. لذا من المفيد أن نبدأ من هنا.</p>
+
+<p>تتكون الخلية العصبية البيولوجية من ثلاثة أجزاء رئيسية. تستقبل التغصنات الإشارات الكهربائية من الخلايا العصبية المجاورة. يجمع جسم الخلية هذه الإشارات ويجمعها. وإذا تجاوز المجموع عتبة معينة، أطلقت الخلية إشارة عبر محورها إلى مجموعة الخلايا التالية.</p>
+
+<p>الفكرة الجوهرية هي أن هذا أمر بسيط في جوهره: <strong>تجميع المدخلات، ومقارنتها بعتبة، والإطلاق أو عدمه</strong>. هذه هي العملية الكاملة لخلية عصبية واحدة. النسخة الاصطناعية تنسخ هذا المنطق بشكل شبه حرفي.</p>
+
+<h2>الخلية الإدراكية: خلية عصبية اصطناعية واحدة</h2>
+
+<p>تعمل الخلية العصبية الاصطناعية — المسماة <strong>perceptron</strong> — على النحو التالي:</p>
+
+<ul>
+  <li>أخذ مجموعة من المدخلات: x₁, x₂, x₃, ... xₙ</li>
+  <li>ضرب كل مدخل في وزن مقابل: w₁, w₂, w₃, ... wₙ</li>
+  <li>جمع كل شيء مع حد الانحياز b: z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</li>
+  <li>تطبيق دالة التنشيط على z لإنتاج الخرج ŷ</li>
+</ul>
+
+<p>يلتقط المجموع الموزون z مدى أهمية كل مدخل. ثم تقرر دالة التنشيط ماذا تفعل بهذا المجموع — هل تطلق الخلية أم لا، وبأي قوة.</p>
+
+<p>يؤدي حد الانحياز b دور العتبة: يزيح المجموع الموزون للأعلى أو للأسفل، مما يحدد مدى سهولة أو صعوبة تنشيط الخلية العصبية. بدون انحياز، سيُجبر كل perceptron على المرور عبر نقطة الأصل، مما يقيد بشدة ما يمكنه تعلمه.</p>
+
+<h2>ما تعنيه الأوزان فعلاً</h2>
+
+<p>الأوزان هي المكان الذي تقطن فيه كل المعرفة المكتسبة. وزن موجب كبير على المدخل xᵢ يعني: «انتبه جيداً لهذا المدخل — عندما يكون مرتفعاً، أنا أكثر ميلاً للتنشيط.» وزن قريب من الصفر يعني: «هذا المدخل بالكاد مهم.» وزن سالب يعني: «هذا المدخل يكبح تنشيطي بنشاط.»</p>
+
+<p>تدريب الشبكة العصبية هو في جوهره عملية إيجاد القيم الصحيحة لجميع الأوزان والانحيازات. كل شيء آخر — البنية، وخوارزمية التحسين، ودالة الخسارة — هو بنية تحتية تخدم هذا الهدف الوحيد.</p>
+
+<h2>لماذا نستخدم السيغمويد بدلاً من دالة الخطوة</h2>
+
+<p>استخدمت الخلايا الإدراكية المبكرة عتبة صارمة: الخرج 1 إذا تجاوز المجموع الموزون الصفر، والخرج 0 إذا لم يتجاوزه. هذا نظيف رياضياً لكنه يحمل عيباً قاتلاً: إنه غير قابل للاشتقاق. عند العتبة، تقفز الدالة بشكل متقطع. في كل مكان آخر، ميلها صفر تماماً.</p>
+
+<p>لماذا يهم هذا؟ لأن طريقة تعلم الشبكات العصبية — الانحدار التدرجي — تتطلب حساب مقدار تغير الخرج عند تعديل وزن ما بشكل طفيف. إذا كان ميل دالة التنشيط صفراً في كل مكان تقريباً، تُفقد هذه المعلومات. لا تستطيع الشبكة التعلم.</p>
+
+<p>الحل هو استبدال القفزة الحادة بمنحنى سلس. الخيار الكلاسيكي الأبرز هو <strong>دالة السيغمويد</strong>:</p>
+
+<p>σ(z) = 1 / (1 + e⁻ᶻ)</p>
+
+<p>تضغط السيغمويد أي قيمة لـ z في النطاق (0, 1)، مقتربةً من 0 للمدخلات السالبة جداً ومن 1 للمدخلات الموجبة جداً. الأهم من ذلك، أنها تفعل ذلك بسلاسة — لها ميل محدد في كل نقطة. هذا الميل هو ما يجعل التعلم ممكناً.</p>
+
+<h2>حدود خلية عصبية واحدة</h2>
+
+<p>يستطيع perceptron واحد فقط حل المسائل <strong>القابلة للفصل الخطي</strong>. هندسياً، يرسم خطاً مستقيماً واحداً عبر فضاء المدخلات، واضعاً فئة على كل جانب.</p>
+
+<p>يبدو هذا مفيداً، وهو كذلك — للمسائل البسيطة. لكن العالم مليء بمسائل غير قابلة للفصل الخطي. المثال الكلاسيكي هو XOR: لا يستطيع أي خط مستقيم فصل الـ 1 عن الـ 0 — إنه استحالة رياضية لأي مصنف خطي. الحل: تكديس خلايا عصبية في طبقات.</p>
+
+<h2>الشبكة متعددة الطبقات: حيث تحدث المعجزة</h2>
+
+<p>تربط <strong>شبكة الخلايا الإدراكية متعددة الطبقات (MLP)</strong> الخلايا الإدراكية في طبقات، حيث تُغذّي مخرجات طبقة ما مدخلات الطبقة التالية. تحوّل كل طبقة البيانات إلى تمثيل جديد، وتُنتج الطبقة الأخيرة مخرجات الشبكة.</p>
+
+<p>تعمل كل طبقة على تشويه فضاء المدخلات وتمطيطه وتدويره. بحلول وصول البيانات إلى طبقة الخرج، يكون ما كان تشابكاً غير قابل للفصل قد تحوّل إلى شيء <em>يمكن</em> فصله بخط بسيط.</p>
+
+<p>هذا هو سبب قوة الشبكات العصبية: <strong>إنها تتعلم تحويل المسألة، لا مجرد حلها في الفضاء الأصلي.</strong></p>
+
+<h2>ما تعنيه "العمق" فعلاً</h2>
+
+<p>"العميق" في التعلم العميق يشير ببساطة إلى عدد الطبقات. الشبكة ذات الطبقات الأكثر تستطيع تعلم تمثيلات أكثر تجريداً — من الحواف البسيطة إلى الأنماط إلى أجزاء الأشياء وصولاً إلى الأشياء القابلة للتمييز. كل طبقة تبني على تجريدات الطبقة السابقة.</p>
+
+<h2>المعاملات: ما يُتعلم</h2>
+
+<p>كل اتصال بين خليتين عصبيتين يقابله وزن. كل خلية عصبية لها انحياز. معاً، تُسمى هذه <strong>معاملات</strong> الشبكة — وهي الأشياء الوحيدة التي تتغير أثناء التدريب.</p>
+
+<p>قد تحتوي شبكة صغيرة على عشرات الآلاف من المعاملات. تحتوي ResNet-50 على 25 مليوناً. أما GPT-3 فيحتوي على 175 مليار. كل رقم من هذه الأرقام تعلمته الشبكة من البيانات — لم يضعه إنسان يدوياً.</p>
+
+<h2>ما التالي</h2>
+
+<p>نعرف الآن ما هي الشبكة العصبية. لكننا لم نطرح بعد السؤال الأهم: <strong>ما أنواع الدوال التي تستطيع الشبكة العصبية تمثيلها فعلاً؟</strong> لهذا السؤال إجابة مذهلة — ونظرية تدعمها. في المقال القادم، نتناول نظرية التقريب العالمي.</p>`
+    }
   }
+}
 ];
 
 /* ---------- Helpers ---------- */
