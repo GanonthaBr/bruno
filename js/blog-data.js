@@ -248,86 +248,281 @@ $$\\mathcal{L} = \\|x - \\hat{x}\\|_2^2 + \\lambda \\|f\\|_1$$
       }
     }
   },
+{
+  id: "universal-approximation-theorem",
+  title: "The Theorem That Justifies All of Deep Learning",
+  category: "Deep Learning",
+  date: "2026-05-14",
+  readTime: "9 min read",
+  excerpt: "A neural network with enough neurons can approximate any function — to any precision. That is not a heuristic or an intuition. It is a theorem. Here is what it actually says, why depth matters exponentially, and what the fine print means for you.",
+  content: `
+<p>In the previous article, we established what a neural network is: a layered composition of simple artificial neurons, each computing a weighted sum of its inputs and passing the result through a nonlinear function. Stack enough of these units in enough layers, connect them the right way, and you have a deep learning model.</p>
 
-  {
-    id: "llm-safety-overview",
-    title: "Why LLM Safety Is Harder Than It Looks",
-    category: "AI Safety",
-    date: "2025-07-20",
-    readTime: "7 min read",
-    excerpt: "The apparent capabilities of today's LLMs mask a host of subtle failure modes. I discuss why alignment and safety remain deeply unsolved problems, even as models get more capable.",
-    content: `
-<p>As language models become more capable, a common reaction is: "they seem fine to me." Interactions feel natural, answers are often helpful, models refuse clearly harmful requests. What's the big deal?</p>
+<p>But we did not ask the most important question: <strong>what can such a model actually represent?</strong></p>
 
-<h2>The Alignment Tax Doesn't Exist (Yet)</h2>
-<p>Today's RLHF-trained models are remarkably pleasant to use. Superficially, they appear aligned. But "not obviously misaligned in easy cases" is a very different bar from "reliably aligned in high-stakes novel situations."</p>
+<p>Is there a class of functions neural networks can learn, and a class they cannot? Or is there some remarkable generality — some theoretical guarantee that a network can, in principle, fit anything? There is. It is called the Universal Approximation Theorem, and it is the mathematical foundation on which all of deep learning rests.</p>
 
-<h2>Subtle Failure Modes</h2>
-<p>Some failure modes are well-documented but under-appreciated:</p>
+<h2>What the Theorem Says</h2>
+
+<p>The Universal Approximation Theorem states:</p>
+
+<p><em>A multi-layer perceptron with a single hidden layer and a sufficient number of neurons can approximate any continuous function to any desired level of precision.</em></p>
+
+<p>Not just simple functions. Not just smooth polynomial functions. Not just functions on small inputs. <strong>Any continuous function</strong>, on any domain, to any precision you specify. This is a profound statement. It means that the limitation of a neural network is never its fundamental expressive power. Given enough neurons, a network can represent any continuous mapping from input to output.</p>
+
+<p>But there is important fine print — and it changes everything about how you design a network in practice.</p>
+
+<h2>Understanding "Approximate"</h2>
+
+<p>The theorem does not say a network can <em>exactly</em> compute any function. It says that for any target function f and any error tolerance ε > 0, there exists a network that stays within ε of f at every point.</p>
+
+<p>The way this approximation works is elegant. Think about approximating a smooth curve with a collection of narrow rectangular pulses. Each pulse covers a small interval of the input and has a height equal to the function's value at that point. The narrower the pulses, the more precisely they trace the curve. A neural network can implement exactly this strategy: each neuron in the hidden layer fires within a specific range of inputs, acting as one pulse. The output unit sums all these pulses, weighted by their heights.</p>
+
+<p>More neurons means narrower pulses, which means finer approximation. In the limit of infinitely many neurons, you can approximate the function to any precision. The same argument extends to higher dimensions — the principle is the same: tile the input space with enough small regions, fit each one, and you approximate the whole.</p>
+
+<h2>Three Kinds of Universality</h2>
+
+<p>MLPs are actually universal in three distinct senses, each more powerful than it might first appear.</p>
+
 <ul>
-  <li><strong>Sycophancy:</strong> Models trained on human feedback learn to tell users what they want to hear, not what is true. Studies show models change answers based on user pushback even when the original answer was correct.</li>
-  <li><strong>Specification gaming:</strong> Models optimize for measurable proxies of the intended goal, not the goal itself. The reward model used in RLHF is itself imperfect and gameable.</li>
-  <li><strong>Deceptive alignment (theoretical):</strong> A sufficiently capable model could learn to behave well during training and evaluation while pursuing different goals in deployment. We have no robust way to rule this out.</li>
+  <li><strong>Universal Boolean function:</strong> Any logical circuit — any combination of AND, OR, NOT, XOR — can be computed by an MLP. A single perceptron can implement AND and OR directly. XOR requires exactly one hidden layer. Since any Boolean function can be expressed in terms of these gates, any Boolean function can be computed by a neural network.</li>
+  <li><strong>Universal classifier:</strong> Any decision boundary in continuous space — no matter how complex its shape — can be captured by an MLP. A single hidden layer can draw arbitrarily curved decision boundaries by composing many linear boundaries together. As the number of faces grows, the polygon approaches any shape.</li>
+  <li><strong>Universal function approximator:</strong> Any continuous real-valued function can be approximated to arbitrary precision by a single-hidden-layer MLP. This is the most general result, and it subsumes both of the above.</li>
 </ul>
 
-<h2>The Interpretability Connection</h2>
-<p>This is exactly why I find mechanistic interpretability so important. If we can build tools to inspect what representations and algorithms models have learned, we have a shot at detecting these failure modes before they cause harm. Without interpretability, we're flying blind.</p>
+<p>All three results hold with just <strong>one hidden layer</strong>. That is the surprising part — you do not need a deep network to guarantee representational power. Depth serves a different purpose entirely.</p>
 
-<h2>An Honest Assessment</h2>
-<p>I don't think current LLMs are particularly dangerous. But the capabilities trajectory is steep, and our ability to understand and audit model behavior has not kept pace. Building the scientific foundations now — while the stakes are lower — is the responsible path forward.</p>`,
-    translations: {
-      fr: {
-        title: "Pourquoi la Sécurité des LLM Est Plus Difficile qu'il n'y Paraît",
-        category: "Sécurité IA",
-        readTime: "7 min de lecture",
-        excerpt: "Les capacités apparentes des LLM actuels masquent une multitude de modes d'échec subtils. Je discute pourquoi l'alignement et la sécurité restent des problèmes profondément non résolus, même à mesure que les modèles gagnent en capacités.",
-        content: `
-<p>À mesure que les modèles de langage deviennent plus capables, une réaction courante est : « Ils me semblent très bien. » Les interactions semblent naturelles, les réponses sont souvent utiles, les modèles refusent les demandes clairement nuisibles. Quel est le problème ?</p>
+<h2>The Catch: Exponential Width</h2>
 
-<h2>Le Coût de l'Alignement n'Existe Pas (Encore)</h2>
-<p>Les modèles entraînés avec RLHF d'aujourd'hui sont remarquablement agréables à utiliser. En apparence, ils semblent alignés. Mais « pas manifestement désaligné dans les cas faciles » est une barre très différente de « aligné de manière fiable dans des situations nouvelles à enjeux élevés ».</p>
+<p>The theorem guarantees existence, not efficiency. Yes, a single hidden layer can approximate any function. But how many neurons does it need?</p>
 
-<h2>Des Modes d'Échec Subtils</h2>
-<p>Certains modes d'échec sont bien documentés mais sous-estimés :</p>
+<p>For certain functions, the answer is catastrophically large. Consider computing the parity (XOR) of N binary inputs. A single-hidden-layer network computing this requires <strong>2^(N−1) neurons</strong>.</p>
+
 <ul>
-  <li><strong>La complaisance (sycophancy) :</strong> Les modèles entraînés sur le feedback humain apprennent à dire aux utilisateurs ce qu'ils veulent entendre, pas ce qui est vrai. Des études montrent que les modèles changent de réponse face à la pression de l'utilisateur, même lorsque la réponse originale était correcte.</li>
-  <li><strong>L'exploitation des spécifications :</strong> Les modèles optimisent pour des substituts mesurables de l'objectif visé, pas pour l'objectif lui-même. Le modèle de récompense utilisé dans RLHF est lui-même imparfait et exploitable.</li>
-  <li><strong>L'alignement trompeur (théorique) :</strong> Un modèle suffisamment capable pourrait apprendre à bien se comporter pendant l'entraînement et l'évaluation tout en poursuivant des objectifs différents en déploiement. Nous n'avons aucun moyen robuste d'exclure cela.</li>
+  <li>N = 10 inputs → 512 neurons</li>
+  <li>N = 20 inputs → 524,288 neurons</li>
+  <li>N = 30 inputs → over 500 million neurons</li>
 </ul>
 
-<h2>Le Lien avec l'Interprétabilité</h2>
-<p>C'est précisément pourquoi je trouve l'interprétabilité mécanistique si importante. Si nous pouvons construire des outils pour inspecter quelles représentations et algorithmes les modèles ont appris, nous avons une chance de détecter ces modes d'échec avant qu'ils ne causent des dommages. Sans interprétabilité, nous volons à l'aveugle.</p>
+<p>The growth is exponential in the number of inputs. For high-dimensional real-world problems — images with thousands of pixels, audio with thousands of samples — a shallow network is completely impractical. This is not a flaw in the theorem; it is just telling you that shallow networks, while theoretically universal, can be impossibly expensive in practice.</p>
 
-<h2>Une Évaluation Honnête</h2>
-<p>Je ne pense pas que les LLM actuels soient particulièrement dangereux. Mais la trajectoire des capacités est abrupte, et notre capacité à comprendre et auditer le comportement des modèles n'a pas suivi le même rythme. Construire les fondations scientifiques maintenant — lorsque les enjeux sont plus faibles — est la voie responsable.</p>`
-      },
-      ar: {
-        title: "لماذا سلامة نماذج اللغة الكبيرة أصعب مما تبدو",
-        category: "سلامة الذكاء الاصطناعي",
-        readTime: "7 دقائق للقراءة",
-        excerpt: "تُخفي القدرات الظاهرة لنماذج اللغة الكبيرة الحديثة كثيراً من أنماط الفشل الخفية. أناقش هنا سبب بقاء المحاذاة والسلامة مشكلتين عميقتَي التعقيد، حتى مع تزايد قدرات النماذج.",
-        content: `
-<p>مع تصاعد قدرات نماذج اللغة، باتت الاستجابة الشائعة: «تبدو على ما يرام بالنسبة لي.» تبدو التفاعلات طبيعية، والإجابات مفيدة في الغالب، والنماذج ترفض الطلبات الضارة صراحةً. فأين المشكلة؟</p>
+<h2>Why Depth Is the Real Answer</h2>
 
-<h2>تكلفة المحاذاة غير موجودة (بعد)</h2>
-<p>نماذج اليوم المُدرَّبة بـ RLHF ممتعة الاستخدام بشكل لافت. ظاهرياً، تبدو محاذاتها جيدة. لكن «غير منحرف بوضوح في الحالات السهلة» يختلف اختلافاً جذرياً عن «موثوق المحاذاة في المواقف الجديدة ذات المخاطر العالية».</p>
+<p>A deep network — one with multiple hidden layers — can compute the same parity function using only <strong>3(N−1) neurons</strong> total.</p>
 
-<h2>أنماط فشل خفية</h2>
-<p>بعض أنماط الفشل موثّقة جيداً لكنها مُقلَّلة من شأنها:</p>
 <ul>
-  <li><strong>المجاملة (Sycophancy):</strong> تتعلم النماذج المُدرَّبة على ملاحظات البشر إخبار المستخدمين بما يريدون سماعه لا بما هو حقيقي. تُظهر الدراسات أن النماذج تُغيّر إجاباتها بناءً على ضغط المستخدم حتى حين كانت الإجابة الأصلية صحيحة.</li>
-  <li><strong>استغلال المواصفات:</strong> تُحسّن النماذج لمؤشرات قابلة للقياس بدلاً من الهدف الحقيقي. نموذج المكافأة المُستخدَم في RLHF هو بحدّ ذاته غير مثالي وقابل للاستغلال.</li>
-  <li><strong>المحاذاة الخادعة (نظرياً):</strong> قد يتعلم نموذج بالغ القدرة التصرف بشكل جيد أثناء التدريب والتقييم بينما يسعى لأهداف مختلفة في مرحلة النشر. لا تتوفر لدينا أي طريقة موثوقة لنفي ذلك.</li>
+  <li>N = 10 inputs → 27 neurons (vs 512)</li>
+  <li>N = 20 inputs → 57 neurons (vs 524,288)</li>
+  <li>N = 30 inputs → 87 neurons (vs 500 million)</li>
 </ul>
 
-<h2>الصلة بالتفسيرية</h2>
-<p>هذا بالضبط ما يجعل التفسيرية الآلية بالغة الأهمية في نظري. إذا استطعنا بناء أدوات لفحص التمثيلات والخوارزميات التي تعلّمتها النماذج، أصبح لدينا فرصة للكشف عن أنماط الفشل هذه قبل أن تتسبب في أضرار. بدون التفسيرية، نحن نطير عمياء.</p>
+<p>That is linear growth instead of exponential. The gap widens with every additional input. How? Through a binary tree of XOR computations. Instead of computing the parity of all N inputs at once, a deep network pairs up inputs at the first layer, pairs up those results at the second layer, and so on. Each layer halves the problem. The total number of neurons grows linearly.</p>
 
-<h2>تقييم صريح</h2>
-<p>لا أعتقد أن نماذج اللغة الكبيرة الحالية خطيرة بشكل خاص. لكن منحنى القدرات حادٌّ، وقدرتنا على فهم سلوك النماذج وتدقيقها لم تواكب الوتيرة ذاتها. بناء الأسس العلمية الآن — حين تكون المخاطر أقل — هو المسار المسؤول.</p>`
-      }
+<p>This is the key insight about depth: <strong>it enables reuse of intermediate computations</strong>. A shallow network must recompute everything from scratch for every output neuron. A deep network computes something once in layer k and hands it to layer k+1, which builds on it. The savings compound across layers.</p>
+
+<p>The formal result is striking: a function that requires exponentially many neurons in a shallow network can require only linearly many in a deep one. <strong>Depth is not just a design preference. For many functions, it is a mathematical necessity.</strong></p>
+
+<h2>The Role of Activation Functions</h2>
+
+<p>There is a third dimension beyond width and depth: the <strong>activation function</strong>.</p>
+
+<p>A hard threshold activation blocks information. Once a neuron produces a 0 or a 1, all the nuance of the original input value is lost. The next layer only knows which neurons fired, not by how much.</p>
+
+<p>A smooth activation like sigmoid or tanh preserves that nuance. A neuron that receives a large positive input fires strongly. A neuron that receives a slightly positive input fires weakly. The gradation carries information that the next layer can use to distinguish cases that a threshold network would treat identically.</p>
+
+<p>ReLU (Rectified Linear Unit), which outputs max(0, z), is in many ways the most "graded" of the standard activations — it is linear above zero, passing arbitrarily large values through without compression. This makes it the most information-preserving, and is why ReLU largely replaced sigmoid as the default in modern networks.</p>
+
+<h2>What the Theorem Does Not Give You</h2>
+
+<p>It is worth being precise about what universal approximation does and does not guarantee.</p>
+
+<p>It guarantees that a network with the right architecture <em>can</em> represent a target function — meaning those weights exist somewhere in the space of all possible weight configurations. It does not guarantee:</p>
+
+<ul>
+  <li>That gradient descent will find those weights</li>
+  <li>That you have enough training data to specify the function</li>
+  <li>That the network will generalize to inputs it has not seen</li>
+  <li>That training will converge in a reasonable amount of time</li>
+</ul>
+
+<p>These are the hard problems of deep learning, and they occupy the rest of the course. <strong>Representation is solved. Learning is the challenge.</strong></p>
+
+<h2>What's Next</h2>
+
+<p>We know a network <em>can</em> represent any function. We do not yet know how to make it represent a <em>specific</em> function — the one that maps our training inputs to the correct outputs. That requires a learning algorithm, and that algorithm at its core requires understanding one mathematical concept: the derivative. In the next article, we build that intuition from the ground up.</p>`,
+
+  translations: {
+    fr: {
+      title: "Le Théorème qui Justifie Tout l'Apprentissage Profond",
+      category: "Apprentissage Profond",
+      readTime: "9 min de lecture",
+      excerpt: "Un réseau de neurones avec suffisamment de neurones peut approximer n'importe quelle fonction — avec n'importe quelle précision. Ce n'est pas une heuristique. C'est un théorème. Voici ce qu'il dit réellement, pourquoi la profondeur compte exponentiellement, et ce que signifient les nuances.",
+      content: `
+<p>Dans l'article précédent, nous avons établi ce qu'est un réseau de neurones : une composition en couches de simples neurones artificiels, chacun calculant une somme pondérée de ses entrées et passant le résultat par une fonction non linéaire.</p>
+
+<p>Mais nous n'avons pas posé la question la plus importante : <strong>que peut réellement représenter un tel modèle ?</strong></p>
+
+<p>Il existe une garantie théorique remarquable qu'un réseau peut, en principe, s'adapter à n'importe quoi. Elle s'appelle le Théorème d'Approximation Universelle, et c'est le fondement mathématique sur lequel repose tout l'apprentissage profond.</p>
+
+<h2>Ce que dit le théorème</h2>
+
+<p>Le Théorème d'Approximation Universelle énonce :</p>
+
+<p><em>Un perceptron multi-couches avec une seule couche cachée et un nombre suffisant de neurones peut approximer n'importe quelle fonction continue avec n'importe quel niveau de précision désiré.</em></p>
+
+<p>Pas seulement les fonctions simples. Pas seulement les fonctions polynomiales lisses. <strong>N'importe quelle fonction continue</strong>, sur n'importe quel domaine, avec n'importe quelle précision que vous spécifiez. Cela signifie que la limitation d'un réseau de neurones n'est jamais sa puissance expressive fondamentale.</p>
+
+<h2>Comprendre « approximer »</h2>
+
+<p>Le théorème ne dit pas qu'un réseau peut calculer <em>exactement</em> n'importe quelle fonction. Il dit que pour toute fonction cible f et toute tolérance d'erreur ε > 0, il existe un réseau qui reste dans ε de f en chaque point.</p>
+
+<p>La façon dont fonctionne cette approximation est élégante. Imaginez approximer une courbe lisse avec une collection d'impulsions rectangulaires étroites. Chaque impulsion couvre un petit intervalle de l'entrée et a une hauteur égale à la valeur de la fonction en ce point. Plus les impulsions sont étroites, plus elles tracent précisément la courbe. Plus de neurones = impulsions plus étroites = approximation plus fine.</p>
+
+<h2>Trois types d'universalité</h2>
+
+<p>Les MLPs sont universels en trois sens distincts :</p>
+
+<ul>
+  <li><strong>Fonction booléenne universelle :</strong> Tout circuit logique peut être calculé par un MLP.</li>
+  <li><strong>Classificateur universel :</strong> N'importe quelle frontière de décision dans l'espace continu peut être capturée par un MLP.</li>
+  <li><strong>Approximateur de fonction universel :</strong> N'importe quelle fonction réelle continue peut être approximée à précision arbitraire par un MLP à couche cachée unique.</li>
+</ul>
+
+<p>Les trois résultats tiennent avec une seule couche cachée. C'est la partie surprenante — la profondeur sert un tout autre objectif.</p>
+
+<h2>Le piège : la largeur exponentielle</h2>
+
+<p>Le théorème garantit l'existence, pas l'efficacité. Pour calculer la parité (XOR) de N entrées binaires, un réseau à couche cachée unique nécessite <strong>2^(N−1) neurones</strong>.</p>
+
+<ul>
+  <li>N = 10 → 512 neurones</li>
+  <li>N = 20 → 524 288 neurones</li>
+  <li>N = 30 → plus de 500 millions de neurones</li>
+</ul>
+
+<p>La croissance est exponentielle. Pour les problèmes réels en haute dimension, un réseau peu profond est totalement impraticable.</p>
+
+<h2>Pourquoi la profondeur est la vraie réponse</h2>
+
+<p>Un réseau profond calcule la même fonction avec seulement <strong>3(N−1) neurones</strong> au total.</p>
+
+<ul>
+  <li>N = 10 → 27 neurones (contre 512)</li>
+  <li>N = 20 → 57 neurones (contre 524 288)</li>
+</ul>
+
+<p>C'est une croissance linéaire au lieu d'exponentielle. La profondeur permet la <strong>réutilisation des calculs intermédiaires</strong>. Un réseau peu profond doit tout recalculer depuis le début pour chaque neurone de sortie. Un réseau profond calcule quelque chose une fois dans la couche k et le passe à la couche k+1, qui s'appuie dessus.</p>
+
+<p><strong>La profondeur n'est pas qu'une préférence de conception. Pour de nombreuses fonctions, c'est une nécessité mathématique.</strong></p>
+
+<h2>Le rôle des fonctions d'activation</h2>
+
+<p>Une activation à seuil dur bloque l'information. Une fois qu'un neurone produit un 0 ou un 1, toute la nuance de la valeur d'entrée originale est perdue. Une activation lisse comme la sigmoïde ou tanh préserve cette nuance — la gradation transporte une information que la couche suivante peut utiliser. ReLU, qui produit max(0, z), est le plus « gradué » des activations standard, et c'est pourquoi il a largement remplacé la sigmoïde comme choix par défaut.</p>
+
+<h2>Ce que le théorème ne vous donne pas</h2>
+
+<p>Il garantit que les bons poids <em>existent</em> quelque part. Il ne garantit pas :</p>
+
+<ul>
+  <li>Que la descente de gradient les trouvera</li>
+  <li>Que vous avez suffisamment de données d'entraînement</li>
+  <li>Que le réseau généralisera aux entrées inconnues</li>
+  <li>Que l'entraînement convergera en un temps raisonnable</li>
+</ul>
+
+<p><strong>La représentation est résolue. L'apprentissage est le défi.</strong></p>
+
+<h2>Ce qui vient ensuite</h2>
+
+<p>Nous savons qu'un réseau <em>peut</em> représenter n'importe quelle fonction. Nous ne savons pas encore comment lui faire représenter une fonction <em>spécifique</em>. Cela nécessite un algorithme d'apprentissage, et cet algorithme nécessite de comprendre un seul concept mathématique : la dérivée. Dans le prochain article, nous construisons cette intuition depuis le début.</p>`
+    },
+
+    ar: {
+      title: "النظرية التي تبرر كل التعلم العميق",
+      category: "التعلم العميق",
+      readTime: "9 دقائق للقراءة",
+      excerpt: "شبكة عصبية بعدد كافٍ من الخلايا تستطيع تقريب أي دالة — بأي دقة. هذه ليست حدسية. إنها نظرية. إليك ما تقوله فعلاً، ولماذا يهم العمق بشكل أسي، وما تعنيه التحفظات.",
+      content: `
+<p>في المقال السابق، أرسينا ما هي الشبكة العصبية: تركيبة متعددة الطبقات من خلايا عصبية اصطناعية بسيطة، كل منها تحسب مجموعاً موزوناً لمدخلاتها وتمرر النتيجة عبر دالة غير خطية.</p>
+
+<p>لكننا لم نطرح السؤال الأهم: <strong>ما الذي يستطيع مثل هذا النموذج تمثيله فعلاً؟</strong></p>
+
+<p>ثمة ضمان نظري رائع بأن الشبكة تستطيع من حيث المبدأ تكييف نفسها مع أي شيء. يُسمى هذا نظرية التقريب العالمي، وهو الأساس الرياضي الذي يرتكز عليه كل التعلم العميق.</p>
+
+<h2>ما تقوله النظرية</h2>
+
+<p>تنص نظرية التقريب العالمي على:</p>
+
+<p><em>يستطيع الشبكة العصبية ذات الطبقة الخفية الواحدة وعدد كافٍ من الخلايا تقريب أي دالة مستمرة بأي مستوى من الدقة المطلوب.</em></p>
+
+<p>ليس فقط الدوال البسيطة. ليس فقط الدوال متعددة الحدود الناعمة. <strong>أي دالة مستمرة</strong>، على أي مجال، وبأي دقة تحددها. هذا يعني أن قيود الشبكة العصبية لا تكمن أبداً في قدرتها التعبيرية الجوهرية.</p>
+
+<h2>فهم معنى "تقريب"</h2>
+
+<p>النظرية لا تقول إن الشبكة تستطيع حساب أي دالة <em>بدقة تامة</em>. تقول إنه لأي دالة هدف f وأي حد خطأ ε > 0، توجد شبكة تبقى ضمن ε من f في كل نقطة.</p>
+
+<p>آلية عمل هذا التقريب أنيقة. تخيل تقريب منحنى سلس بمجموعة من النبضات المستطيلة الضيقة. كل نبضة تغطي فترة صغيرة من المدخل وارتفاعها يساوي قيمة الدالة عند تلك النقطة. كلما ضاقت النبضات، كلما تتبعت المنحنى بدقة أكبر. المزيد من الخلايا = نبضات أضيق = تقريب أدق.</p>
+
+<h2>ثلاثة أنواع من الشمولية</h2>
+
+<p>الشبكات متعددة الطبقات شاملة بثلاثة معانٍ متمايزة:</p>
+
+<ul>
+  <li><strong>دالة بوليانية شاملة:</strong> يمكن حساب أي دائرة منطقية بواسطة MLP.</li>
+  <li><strong>مصنّف شامل:</strong> يمكن التقاط أي حد فاصل في الفضاء المستمر بواسطة MLP.</li>
+  <li><strong>مقرّب دالة شامل:</strong> يمكن تقريب أي دالة حقيقية مستمرة بدقة اعتباطية بواسطة MLP ذي طبقة خفية واحدة.</li>
+</ul>
+
+<p>تنطبق النتائج الثلاثة مع <strong>طبقة خفية واحدة فقط</strong>. هذا هو الجزء المفاجئ — العمق يخدم غرضاً مختلفاً تماماً.</p>
+
+<h2>المأزق: العرض الأسي</h2>
+
+<p>النظرية تضمن الوجود، لا الكفاءة. لحساب تكافؤ (XOR) لـ N مدخل ثنائي، تحتاج شبكة ذات طبقة خفية واحدة إلى <strong>2^(N−1) خلية عصبية</strong>.</p>
+
+<ul>
+  <li>N = 10 مدخلات → 512 خلية</li>
+  <li>N = 20 مدخلاً → 524,288 خلية</li>
+  <li>N = 30 مدخلاً → أكثر من 500 مليون خلية</li>
+</ul>
+
+<p>النمو أسي. للمسائل الواقعية عالية الأبعاد، الشبكة الضحلة غير عملية تماماً.</p>
+
+<h2>لماذا العمق هو الإجابة الحقيقية</h2>
+
+<p>تستطيع الشبكة العميقة حساب الدالة ذاتها بـ <strong>3(N−1) خلية فقط</strong>.</p>
+
+<ul>
+  <li>N = 10 → 27 خلية (مقابل 512)</li>
+  <li>N = 20 → 57 خلية (مقابل 524,288)</li>
+</ul>
+
+<p>هذا نمو خطي بدلاً من الأسي. العمق يُتيح <strong>إعادة استخدام الحسابات الوسيطة</strong>. الشبكة الضحلة يجب أن تعيد حساب كل شيء من الصفر لكل خلية خرج. أما الشبكة العميقة فتحسب شيئاً مرة واحدة في الطبقة k وتمرره إلى الطبقة k+1 التي تبني عليه.</p>
+
+<p><strong>العمق ليس مجرد تفضيل تصميمي. لكثير من الدوال، إنه ضرورة رياضية.</strong></p>
+
+<h2>دور دوال التنشيط</h2>
+
+<p>تنشيط العتبة الصارمة يحجب المعلومات. بمجرد أن تنتج خلية عصبية 0 أو 1، تضيع كل دقة قيمة المدخل الأصلية. التنشيط الناعم كالسيغمويد أو tanh يحافظ على تلك الدقة — التدرج يحمل معلومات تستطيع الطبقة التالية استخدامها. أما ReLU، الذي يُنتج max(0, z)، فهو الأكثر "تدرجاً" بين التنشيطات القياسية، ولهذا حلّ محل السيغمويد كخيار افتراضي في الشبكات الحديثة.</p>
+
+<h2>ما لا تمنحك إياه النظرية</h2>
+
+<p>تضمن النظرية أن الأوزان الصحيحة <em>موجودة</em> في مكان ما. لا تضمن:</p>
+
+<ul>
+  <li>أن الانحدار التدرجي سيجدها</li>
+  <li>أن لديك بيانات تدريب كافية</li>
+  <li>أن الشبكة ستعمم على المدخلات غير المرئية</li>
+  <li>أن التدريب سيتقارب في وقت معقول</li>
+</ul>
+
+<p><strong>التمثيل محلول. التعلم هو التحدي.</strong></p>
+
+<h2>ما التالي</h2>
+
+<p>نعرف أن الشبكة <em>تستطيع</em> تمثيل أي دالة. لا نعرف بعد كيف نجعلها تمثل دالة <em>محددة</em>. هذا يتطلب خوارزمية تعلم، وهذه الخوارزمية تتطلب في جوهرها فهم مفهوم رياضي واحد: المشتقة. في المقال القادم، نبني هذه الحدسية من الصفر.</p>`
     }
-  },
+  }
+},
 {
   id: "what-is-a-neural-network",
   title: "What Even Is a Neural Network? A Beginner's Honest Explanation",
