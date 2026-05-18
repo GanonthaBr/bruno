@@ -126,7 +126,270 @@ $$\\text{Attn}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right
       }
     }
   },
+{
+  id: "how-machines-learn-erm",
+  title: "How Machines Actually Learn: The Math Behind Training",
+  category: "Deep Learning",
+  date: "2026-05-17",
+  readTime: "9 min read",
+  excerpt: "Training a neural network is not magic — it is a precisely defined optimisation problem. Here is the full setup: loss functions, Empirical Risk Minimization, and the gradient descent algorithm that navigates a billion-dimensional landscape.",
+  content: `
+<p>We now know what a neural network is — a layered composition of artificial neurons, each computing a weighted sum and passing the result through a nonlinear function. We know it can represent any continuous function, given enough neurons and depth.</p>
 
+<p>But we have not answered the most practical question: <strong>how does a network actually arrive at the right weights?</strong></p>
+
+<p>This is the learning problem. And like most hard problems in mathematics, it turns out to have a clean formulation — once you find the right way to state it.</p>
+
+<h2>Setting Up the Problem</h2>
+
+<p>Suppose you have a dataset of n training examples: pairs of inputs and correct outputs, written as (x⁽¹⁾, y⁽¹⁾), (x⁽²⁾, y⁽²⁾), ..., (x⁽ⁿ⁾, y⁽ⁿ⁾). Your neural network takes an input x and produces a prediction ŷ = f(x; W), where W represents all the weights and biases in the network.</p>
+
+<p>The question is: <strong>what value of W makes the network's predictions match the true outputs?</strong> We cannot solve for W algebraically — the relationship is too nonlinear and the space too large. We need a different approach.</p>
+
+<h2>What Does "Wrong" Mean? The Loss Function</h2>
+
+<p>Before we can fix the network's predictions, we need a way to measure how wrong they are. This is the job of the <strong>loss function</strong> (also called the divergence or cost function). A loss function takes a prediction ŷ and a true label y and returns a single number: the cost of that prediction.</p>
+
+<p><strong>Mean Squared Error (MSE)</strong> is the classical choice for regression:</p>
+<p>ℓ(ŷ, y) = (ŷ − y)²</p>
+<p>MSE penalizes large errors more heavily than small ones, and it is differentiable everywhere — a property we will need shortly.</p>
+
+<p><strong>Cross-entropy loss</strong> is the standard choice for classification. For binary classification:</p>
+<p>ℓ(ŷ, y) = −y log(ŷ) − (1 − y) log(1 − ŷ)</p>
+<p>Cross-entropy is steep when the predicted probability is far from the true label, giving a strong correction signal, and flattens when the prediction is confident and correct.</p>
+
+<p>The choice of loss function is not arbitrary — it encodes your assumptions about what kinds of errors matter, and how much.</p>
+
+<h2>Empirical Risk Minimization</h2>
+
+<p>One example's loss tells us how wrong the network is on one data point. We want the network to be good on <em>all</em> training examples. The natural way to combine individual losses is to average them — the <strong>Empirical Risk</strong>:</p>
+
+<p>R(W) = (1/n) Σᵢ ℓ(f(x⁽ⁱ⁾; W), y⁽ⁱ⁾)</p>
+
+<p>The empirical risk is a single number summarising how well the current weights W perform across all n training examples. <strong>Training is now a well-posed optimisation problem:</strong></p>
+
+<p>W* = argmin R(W)</p>
+
+<p>Find the weights W* that minimise the average loss over the training data. This framework is called <strong>Empirical Risk Minimization (ERM)</strong>, and it is the theoretical foundation of almost all supervised machine learning.</p>
+
+<h2>A Brief History: Why ERM Took Time to Arrive</h2>
+
+<p>The earliest neural networks used the <strong>perceptron learning rule</strong>, which only updates weights on misclassified examples. When a prediction is correct, nothing changes. The problem: the learning signal is binary — either wrong or right — with no notion of <em>how</em> wrong. You cannot compute a smooth gradient from a binary signal.</p>
+
+<p>In 1960, <strong>ADALINE</strong> (Adaptive Linear Neuron, Widrow and Hoff) proposed something different: use the MSE loss on every example, including the correctly classified ones, and minimise it across all training data. This was one of the first applications of ERM to neural networks.</p>
+
+<p>The key insight: a smooth, differentiable loss defined on every example provides a gradient signal <em>everywhere</em> in weight space. That gradient signal is exactly what gradient descent needs to move systematically toward better weights. <strong>MADALINE</strong> (Multiple ADALINEs) extended the principle to multi-layer systems — an early predecessor to full backpropagation.</p>
+
+<h2>The Loss Landscape</h2>
+
+<p>Imagine plotting the empirical risk R(W) as a function of the network's weights. For a network with two weights, you get a 3D surface — the <strong>loss landscape</strong>.</p>
+
+<p>Real networks have millions or billions of weights, so the landscape lives in an unimaginably high-dimensional space. But the intuition holds: there are valleys (good weights), hills (bad weights), and saddle points. Training is navigating from wherever the weights start to the bottom of a good valley.</p>
+
+<p>The landscape is not smooth or bowl-shaped. It has many local minima, flat regions, and sharp ridges. This is why training is hard in practice — the optimisation problem is non-convex, and simple analytical solutions do not exist.</p>
+
+<h2>Gradient Descent: The Navigation Algorithm</h2>
+
+<p>At any point in the loss landscape, the gradient ∇R(W) tells you the direction of steepest ascent. Moving in the opposite direction takes you downhill. This is <strong>gradient descent</strong>:</p>
+
+<p>W ← W − η · ∇_W R(W)</p>
+
+<p>where η (eta) is the <strong>learning rate</strong> — a small positive number controlling step size. Repeat many times: compute the gradient, step downhill, repeat. The weights gradually drift toward a region of low loss.</p>
+
+<p>The learning rate is a critical choice. Too large: the steps overshoot and training diverges. Too small: training converges, but takes impractically long. Setting it well is one of the most important practical skills in deep learning.</p>
+
+<h2>The Complete Training Loop</h2>
+
+<p>Put all the pieces together and training is a loop:</p>
+
+<ul>
+  <li><strong>Forward pass</strong> — feed x through the network, compute ŷ = f(x; W)</li>
+  <li><strong>Compute loss</strong> — evaluate ℓ(ŷ, y)</li>
+  <li><strong>Backward pass</strong> — compute ∂ℓ/∂W for every weight via the chain rule</li>
+  <li><strong>Update weights</strong> — W ← W − η · ∂ℓ/∂W</li>
+  <li>Repeat for all training examples, for many epochs</li>
+</ul>
+
+<p>The backward pass is the most computationally intensive step — applying the chain rule across dozens of layers, for every weight in the network. That algorithm is called <strong>backpropagation</strong>, and it is the subject of the next article.</p>
+
+<h2>What ERM Does Not Solve</h2>
+
+<p>ERM gives a clean objective. Gradient descent gives an algorithm to minimise it. But there are important gaps:</p>
+
+<ul>
+  <li><strong>Overfitting.</strong> Minimising training loss does not guarantee good performance on new data. A powerful network can memorise the training set and still fail on everything else.</li>
+  <li><strong>Computational cost.</strong> Computing the full gradient over all n examples for every update is expensive. Stochastic gradient descent addresses this.</li>
+  <li><strong>Convergence.</strong> Gradient descent finds a local minimum, not necessarily the global one. Whether the local minimum found is good enough is an empirical question.</li>
+</ul>
+
+<p>These are not flaws in ERM — they are the open problems that make deep learning rich and difficult. Each has a family of solutions covered in later articles.</p>
+
+<h2>What's Next</h2>
+
+<p>We have the framework: ERM tells us what to minimise, gradient descent tells us how to move. But moving requires computing the gradient of the loss with respect to every weight in a deep network. That computation is the chain rule applied layer by layer — <strong>backpropagation</strong>. Building that intuition starts with understanding derivatives, which is exactly what the next article covers.</p>`,
+
+  translations: {
+    fr: {
+      title: "Comment les machines apprennent vraiment : les mathématiques de l'entraînement",
+      category: "Apprentissage Profond",
+      readTime: "9 min de lecture",
+      excerpt: "Entraîner un réseau de neurones n'est pas de la magie — c'est un problème d'optimisation précisément défini. Voici la formulation complète : fonctions de perte, minimisation du risque empirique, et l'algorithme de descente de gradient qui navigue dans un espace de milliards de dimensions.",
+      content: `
+<p>Nous savons maintenant ce qu'est un réseau de neurones. Mais nous n'avons pas encore répondu à la question la plus pratique : <strong>comment un réseau arrive-t-il aux bons poids ?</strong></p>
+
+<p>C'est le problème de l'apprentissage. Et comme la plupart des problèmes difficiles en mathématiques, il s'avère avoir une formulation élégante — une fois que vous trouvez la bonne façon de le poser.</p>
+
+<h2>Formuler le problème</h2>
+
+<p>Supposons que vous ayez un jeu de données de n exemples d'entraînement : des paires d'entrées et de sorties correctes. Votre réseau prend une entrée x et produit une prédiction ŷ = f(x; W), où W représente tous les poids et biais du réseau. La question : <strong>quelle valeur de W fait correspondre les prédictions aux sorties réelles ?</strong></p>
+
+<p>On ne peut pas résoudre pour W algébriquement — la relation est trop non linéaire. Il nous faut une approche différente.</p>
+
+<h2>Que signifie « se tromper » ? La fonction de perte</h2>
+
+<p>Avant de pouvoir corriger les prédictions, il faut mesurer leur degré d'erreur. C'est le rôle de la <strong>fonction de perte</strong>.</p>
+
+<p><strong>L'erreur quadratique moyenne (MSE)</strong> est le choix classique pour la régression :</p>
+<p>ℓ(ŷ, y) = (ŷ − y)²</p>
+
+<p><strong>La perte cross-entropique</strong> est le choix standard pour la classification :</p>
+<p>ℓ(ŷ, y) = −y log(ŷ) − (1 − y) log(1 − ŷ)</p>
+
+<p>Le choix de la fonction de perte n'est pas arbitraire — il encode vos hypothèses sur le type d'erreurs importantes.</p>
+
+<h2>La minimisation du risque empirique</h2>
+
+<p>On moyenne les pertes individuelles pour obtenir le <strong>risque empirique</strong> :</p>
+
+<p>R(W) = (1/n) Σᵢ ℓ(f(x⁽ⁱ⁾; W), y⁽ⁱ⁾)</p>
+
+<p>L'entraînement devient un problème d'optimisation bien posé :</p>
+<p>W* = argmin R(W)</p>
+
+<p>Ce cadre s'appelle la <strong>Minimisation du Risque Empirique (ERM)</strong>, et c'est le fondement théorique de presque tout l'apprentissage automatique supervisé.</p>
+
+<h2>Un peu d'histoire</h2>
+
+<p>Les premiers réseaux utilisaient la règle du perceptron, qui ne met à jour les poids que sur les exemples mal classifiés — signal binaire, pas de gradient lisse. En 1960, <strong>ADALINE</strong> (Widrow et Hoff) a proposé d'utiliser la MSE sur tous les exemples, y compris les correctement classifiés. Cela a créé un signal de gradient partout dans l'espace des poids — exactement ce dont la descente de gradient a besoin.</p>
+
+<h2>Le paysage de la perte</h2>
+
+<p>Imaginez tracer le risque empirique R(W) en fonction des poids. Pour deux poids, on obtient une surface 3D — le <strong>paysage de la perte</strong> — avec des vallées (bons poids) et des collines (mauvais poids). L'entraînement consiste à naviguer vers le fond d'une bonne vallée. Le paysage n'est pas lisse — il a de nombreux minima locaux, des régions plates et des crêtes abruptes.</p>
+
+<h2>La descente de gradient</h2>
+
+<p>Le gradient ∇R(W) indique la direction de la montée la plus raide. Se déplacer dans la direction opposée descend. C'est la <strong>descente de gradient</strong> :</p>
+
+<p>W ← W − η · ∇_W R(W)</p>
+
+<p>où η est le <strong>taux d'apprentissage</strong> — un petit nombre positif contrôlant la taille du pas. Trop grand : on dépasse la vallée. Trop petit : convergence trop lente.</p>
+
+<h2>La boucle d'entraînement complète</h2>
+
+<ul>
+  <li><strong>Passe avant</strong> — calculer ŷ = f(x; W)</li>
+  <li><strong>Calculer la perte</strong> — évaluer ℓ(ŷ, y)</li>
+  <li><strong>Passe arrière</strong> — calculer ∂ℓ/∂W pour chaque poids</li>
+  <li><strong>Mettre à jour les poids</strong> — W ← W − η · ∂ℓ/∂W</li>
+  <li>Répéter pour tous les exemples, pour de nombreuses époques</li>
+</ul>
+
+<p>La passe arrière — étape 3 — est la rétropropagation, le sujet du prochain article.</p>
+
+<h2>Ce que l'ERM ne résout pas</h2>
+
+<ul>
+  <li><strong>Surapprentissage :</strong> minimiser la perte d'entraînement ne garantit pas une bonne généralisation</li>
+  <li><strong>Coût computationnel :</strong> calculer le gradient complet sur tous les exemples est coûteux</li>
+  <li><strong>Convergence :</strong> la descente de gradient trouve un minimum local, pas forcément global</li>
+</ul>
+
+<h2>Ce qui vient ensuite</h2>
+
+<p>Nous avons le cadre. Pour avancer, il faut calculer le gradient de la perte par rapport à chaque poids dans un réseau profond — c'est la rétropropagation, construite entièrement sur la règle de dérivation en chaîne. C'est ce que le prochain article couvre.</p>`
+    },
+
+    ar: {
+      title: "كيف تتعلم الآلات فعلاً: رياضيات التدريب",
+      category: "التعلم العميق",
+      readTime: "9 دقائق للقراءة",
+      excerpt: "تدريب الشبكة العصبية ليس سحراً — إنه مسألة تحسين محددة بدقة. إليك الصياغة الكاملة: دوال الخسارة، تصغير المخاطر التجريبية، وخوارزمية الانحدار التدرجي التي تتنقل في فضاء من مليارات الأبعاد.",
+      content: `
+<p>نعرف الآن ما هي الشبكة العصبية. لكننا لم نجب على السؤال الأكثر عملية: <strong>كيف تصل الشبكة إلى الأوزان الصحيحة؟</strong></p>
+
+<p>هذه هي مسألة التعلم. وكأغلب المسائل الصعبة في الرياضيات، تبين أن لها صياغة واضحة — بمجرد إيجاد الطريقة الصحيحة لطرحها.</p>
+
+<h2>صياغة المسألة</h2>
+
+<p>لنفرض أن لديك مجموعة بيانات من n مثال تدريبي: أزواج من المدخلات والمخرجات الصحيحة. شبكتك العصبية تأخذ مدخلاً x وتنتج تنبؤاً ŷ = f(x; W)، حيث W تمثل جميع الأوزان والانحيازات في الشبكة. السؤال: <strong>ما قيمة W التي تجعل تنبؤات الشبكة تطابق المخرجات الحقيقية؟</strong></p>
+
+<p>لا يمكننا حل المعادلة جبرياً — العلاقة غير خطية للغاية. نحتاج إلى نهج مختلف.</p>
+
+<h2>ما معنى "الخطأ"؟ دالة الخسارة</h2>
+
+<p>قبل تصحيح تنبؤات الشبكة، نحتاج لقياس مدى خطئها. هذا ما تفعله <strong>دالة الخسارة</strong>.</p>
+
+<p><strong>متوسط مربع الخطأ (MSE)</strong> هو الخيار الكلاسيكي للانحدار:</p>
+<p>ℓ(ŷ, y) = (ŷ − y)²</p>
+
+<p><strong>خسارة الإنتروبيا المتقاطعة</strong> هي المعيار لمسائل التصنيف:</p>
+<p>ℓ(ŷ, y) = −y log(ŷ) − (1 − y) log(1 − ŷ)</p>
+
+<p>اختيار دالة الخسارة ليس اعتباطياً — يُشفّر افتراضاتك حول أنواع الأخطاء المهمة.</p>
+
+<h2>تصغير المخاطر التجريبية</h2>
+
+<p>نحسب متوسط الخسائر الفردية للحصول على <strong>المخاطرة التجريبية</strong>:</p>
+
+<p>R(W) = (1/n) Σᵢ ℓ(f(x⁽ⁱ⁾; W), y⁽ⁱ⁾)</p>
+
+<p>يصبح التدريب الآن مسألة تحسين واضحة:</p>
+<p>W* = argmin R(W)</p>
+
+<p>يُسمى هذا الإطار <strong>تصغير المخاطر التجريبية (ERM)</strong>، وهو الأساس النظري لكل تعلم الآلة الخاضع للإشراف تقريباً.</p>
+
+<h2>لمحة تاريخية</h2>
+
+<p>استخدمت الشبكات الأولى قاعدة الإدراك، التي لا تحدّث الأوزان إلا على الأمثلة المصنفة خطأً — إشارة ثنائية، لا تدرج سلس. في عام 1960، اقترح <strong>ADALINE</strong> (وايدرو وهوف) استخدام MSE على جميع الأمثلة، مما أنشأ إشارة تدرج في كل مكان في فضاء الأوزان — وهو بالضبط ما يحتاجه الانحدار التدرجي.</p>
+
+<h2>مشهد الخسارة</h2>
+
+<p>تخيّل رسم R(W) كدالة للأوزان. لشبكة بوزنين، تحصل على سطح ثلاثي الأبعاد — <strong>مشهد الخسارة</strong> — بوديان (أوزان جيدة) وتلال (أوزان سيئة). التدريب هو التنقل نحو قاع وادٍ جيد. المشهد ليس سلساً — له الكثير من الحدود الدنيا المحلية والمناطق المسطحة.</p>
+
+<h2>الانحدار التدرجي</h2>
+
+<p>∇R(W) يشير إلى اتجاه أشد صعود. التحرك في الاتجاه المعاكس ينزل. هذا هو <strong>الانحدار التدرجي</strong>:</p>
+
+<p>W ← W − η · ∇_W R(W)</p>
+
+<p>حيث η هو <strong>معدل التعلم</strong>. كبير جداً: نتجاوز الوادي. صغير جداً: تقارب بطيء جداً.</p>
+
+<h2>حلقة التدريب الكاملة</h2>
+
+<ul>
+  <li><strong>التمرير الأمامي</strong> — حساب ŷ = f(x; W)</li>
+  <li><strong>حساب الخسارة</strong> — تقييم ℓ(ŷ, y)</li>
+  <li><strong>التمرير الخلفي</strong> — حساب ∂ℓ/∂W لكل وزن</li>
+  <li><strong>تحديث الأوزان</strong> — W ← W − η · ∂ℓ/∂W</li>
+  <li>التكرار لجميع الأمثلة، لعدة دورات</li>
+</ul>
+
+<p>التمرير الخلفي هو خوارزمية الانتشار العكسي — موضوع المقال القادم.</p>
+
+<h2>ما لا يحله ERM</h2>
+
+<ul>
+  <li><strong>الإفراط في التخصيص:</strong> تصغير خسارة التدريب لا يضمن تعميماً جيداً</li>
+  <li><strong>التكلفة الحسابية:</strong> حساب التدرج الكامل على جميع الأمثلة مكلف</li>
+  <li><strong>التقارب:</strong> الانحدار التدرجي يجد حداً أدنى محلياً، لا كلياً بالضرورة</li>
+</ul>
+
+<h2>ما التالي</h2>
+
+<p>لدينا الإطار. للتقدم، نحتاج حساب تدرج الخسارة بالنسبة لكل وزن في الشبكة العميقة — الانتشار العكسي، المبني كلياً على قاعدة السلسلة. المقال القادم يبني هذه الحدسية.</p>`
+    }
+  }
+},
   {
     id: "sparse-autoencoders-features",
     title: "Sparse Autoencoders and the Superposition Hypothesis",
